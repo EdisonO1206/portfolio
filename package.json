@@ -11,10 +11,12 @@
   "dependencies": {
     "@prisma/client": "^6.18.0",
     "@prisma/extension-accelerate": "^2.0.2",
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
     "flowbite": "^3.1.2",
     "flowbite-react": "^0.12.10",
+    "jsonwebtoken": "^9.0.2",
     "next": "16.0.1",
     "prisma": "^6.18.0",
     "react": "19.2.0",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
