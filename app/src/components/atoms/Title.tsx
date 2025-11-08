@@ -8,11 +8,12 @@ interface Props{
     changeColorOnHover?: boolean;
     titleClassName?: string;
     subTitleClassName?: string;
+    containerClass?: string;
 }
 
-const Title = ({ titleA = "E", titleB="O", subTitle = "dev", inlineTitles = true, changeColorOnHover, subTitleClassName, titleClassName } : Props) => {
+const Title = ({ containerClass, titleA = "E", titleB="O", subTitle = "dev", inlineTitles = true, changeColorOnHover, subTitleClassName, titleClassName } : Props) => {
     return (
-        <div className={`flex ${inlineTitles ? "flex-row" : "flex-col"}`}>
+        <div className={`flex ${inlineTitles ? "flex-row" : "flex-col"} ${containerClass}`}>
             <div className={`font-extrabold text-5xl bungee ${titleClassName} ${changeColorOnHover ? 'hover:text-blue-600 transition-all cursor-pointer' : ''}`}>
                 <span className='hover:text-4xl transition-all'>{titleA}</span>
                 <span className='hover:text-4xl transition-all'>{titleB}</span>

@@ -25,7 +25,7 @@ export async function POST(req: Request){
         const { document, email, lastname, name, password } = data
 
         // create hashed password
-        const secure_password = hashUserPassword(password)
+        const secure_password = await hashUserPassword(password)
 
         // create user
         const res = await prisma.users.create({

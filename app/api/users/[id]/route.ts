@@ -45,7 +45,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         })
 
         // verify old_password 
-        const password_verify = compareUserPassword(String(old_password), String(user_password))
+        const password_verify = await compareUserPassword(String(old_password), String(user_password?.password))
 
         // return error if password verify failed
         if(!password_verify){
@@ -53,7 +53,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         }
 
         // create user secure password
-        const secure_password = hashUserPassword(password)
+        const secure_password = await hashUserPassword(password)
 
         // actualizar usuario
         const res = await prisma.users.update({

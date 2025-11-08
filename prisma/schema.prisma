@@ -29,7 +29,7 @@ model users {
   name      String? @db.VarChar(100)
   lastname  String? @db.VarChar(100)
   document  String? @db.VarChar(100)
-  email     String? @db.VarChar(100)
+  email     String? @db.VarChar(100) @unique
   password  String? @db.Text
 }
 
