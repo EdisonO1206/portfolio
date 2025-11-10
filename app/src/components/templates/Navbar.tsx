@@ -6,7 +6,7 @@ import NavbarButton from '../atoms/NavbarButton'
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { deleteCookie } from '@/services/userService'
+import { checkIfAuth, deleteCookie } from '@/services/userService'
 import { getUserLocation, getIfValidLocation } from '@/services/locationService'
 import { useRouter } from 'next/navigation'
 
@@ -17,8 +17,10 @@ const Navbar = () => {
 
     console.log(logedIn)
 
+
+
     useEffect(() => {
-        async function verifyLocationAndAuth() {
+        async function verifyLocation() {
             try {
                 const loc = await getUserLocation()
 
@@ -36,7 +38,24 @@ const Navbar = () => {
             }
         }
         
-        verifyLocationAndAuth()
+        verifyLocation()
+    }, [])
+
+    useEffect(() => {
+        async function verifyAuth() {
+            try {
+            const res = await checkIfAuth()
+            if (res?.valid && res.cookie) {
+                setLogedIn(true)
+            } else {
+                setLogedIn(false)
+            }
+            } catch {
+            setLogedIn(false)
+            }
+        }
+
+        verifyAuth()
     }, [])
 
     useEffect(() => {
@@ -102,7 +121,7 @@ const Navbar = () => {
                                         </button>
                                     </li>
                                     <li>
-                                        <NavbarLink to='/user/login' text='Dashboard' isSecondary={true}></NavbarLink>
+                                        <NavbarLink to='/dashboard' text='Dashboard' isSecondary={true}></NavbarLink>
                                     </li>
                                 </>
                             )
