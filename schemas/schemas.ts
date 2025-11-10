@@ -3,10 +3,10 @@ import z from "zod"
 export const projectSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    creation_date: z.string().min(1),
+    creation_date: z.coerce.date(),
     url: z.string(),
     technologies: z.string().min(1),
-    image: z.string().optional(),
+    image: z.instanceof(File)
 })
 
 export const userSchema = z.object({

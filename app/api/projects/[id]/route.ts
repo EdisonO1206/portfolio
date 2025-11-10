@@ -1,6 +1,7 @@
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
 import { projectSchema } from "@/schemas/schemas";
+import { saveFile } from "@/helpers/files";
 
 export async function GET(req: Request, context: { params: Promise<{ id: string }> }){
     try {
@@ -24,13 +25,24 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
     try{
         // get payload
         const { id } = await context.params
-        const body = await req.json()
+        const body = await req.formData()
+
+        const data = {
+            title: body.get("title"),
+            description: body.get("description"),
+            creation_date: body.get("creation_date"),
+            url: body.get("url"),
+            technologies: body.get("technologies"),
+            image: body.get("image"),
+        };
 
         // validate payload
-        const data = projectSchema.parse(body);
+        const validated = projectSchema.parse(data);
 
         // destructure paylaod
-        const { title, description, creation_date, url, technologies, image } = data
+        const { title, description, creation_date, url, technologies, image } = validated
+
+        const filename = await saveFile(image)
 
         // save data in database
         const res = await prisma.projects.update({
@@ -40,7 +52,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
             data: {
                 creation_date: new Date(creation_date),
                 description,
-                image,
+                image: filename,
                 technologies,
                 title,
                 url
