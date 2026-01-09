@@ -6,7 +6,7 @@ export const projectSchema = z.object({
     creation_date: z.coerce.date(),
     url: z.string(),
     technologies: z.string().min(1),
-    image: z.instanceof(File)
+    image: z.instanceof(File),
 })
 
 export const userSchema = z.object({
@@ -15,26 +15,20 @@ export const userSchema = z.object({
     document: z.string().min(1),
     email: z.string().email(),
     password: z.string().min(1),
-    old_password: z.string().min(1).optional()
+    old_password: z.string().min(1).optional(),
 })
 
 export const loginSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(1)
+    password: z.string().min(1),
 })
 
 export const tokenSchema = z.object({
-    token: z.string().min(1),
     creation_date: z.string().min(1),
     expiration_date: z.string().min(1),
     used: z.boolean()
 })
 
-export const locationSchema = z.object({
-    lat: z.number()
-        .min(-90, { message: "La latitud mínima es -90" })
-        .max(90, { message: "La latitud máxima es 90" }),
-    lon: z.number()
-        .min(-180, { message: "La longitud mínima es -180" })
-        .max(180, { message: "La longitud máxima es 180" })
+export const OTPSchema = z.object({
+    OTP: z.string().min(1),
 })

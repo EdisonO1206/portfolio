@@ -1,10 +1,15 @@
 import axios from "axios";
+import { tokenizer } from "./tokenService";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export async function getProjects(){
     try {
-        const res = await axios.get(`${API_URL}/projects`)
+        const token = await tokenizer()
+
+        const res = await axios.get(`${API_URL}/projects`, {
+            headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+        })
 
         if(res.data?.error){
             return { valid: false, message: res?.data?.error }
@@ -18,8 +23,12 @@ export async function getProjects(){
 }
 
 export async function getProject(id: number){
-        try {
-        const res = await axios.get(`${API_URL}/projects/${id}`)
+    try {
+        const token = await tokenizer()
+
+        const res = await axios.get(`${API_URL}/projects/${id}`, {
+            headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+        })
 
         if(res.data?.error){
             return { valid: false, message: res?.data?.error }
@@ -34,6 +43,8 @@ export async function getProject(id: number){
 
 export async function createProject(title: string, description: string, technologies: string, url: string, date: string, image: File){
     try {
+        const token = await tokenizer()
+
         const formData = new FormData();
         formData.append("title", title);
         formData.append("technologies", technologies);
@@ -43,6 +54,7 @@ export async function createProject(title: string, description: string, technolo
         formData.append("image", image);
         const res = await axios.post(`${API_URL}/projects`, formData, {
             headers: {
+                Authorization: `Bearer ${token?.data}`,
                 "Content-Type": "multipart/form-data",
             },
         })
@@ -59,6 +71,8 @@ export async function createProject(title: string, description: string, technolo
 
 export async function editProject(id: number, title: string, description: string, technologies: string, url: string, date: string, image: File){
     try {
+        const token = await tokenizer()
+
         const formData = new FormData();
         formData.append("title", title);
         formData.append("technologies", technologies);
@@ -68,6 +82,7 @@ export async function editProject(id: number, title: string, description: string
         formData.append("image", image);
         const res = await axios.put(`${API_URL}/projects/${id}`, formData, {
             headers: {
+                Authorization: `Bearer ${token?.data}`,
                 "Content-Type": "multipart/form-data",
             },
         })
@@ -84,7 +99,11 @@ export async function editProject(id: number, title: string, description: string
 
 export async function deleteProject(id: number){
     try {
-        const res = await axios.delete(`${API_URL}/projects/${id}`)
+        const token = await tokenizer()
+
+        const res = await axios.delete(`${API_URL}/projects/${id}`, {
+            headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+        })
 
         if(res.data?.error){
             return { valid: false, message: res?.data?.error }

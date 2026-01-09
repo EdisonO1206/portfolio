@@ -43,7 +43,15 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
     async function fetchData(){
         try {
             let res = await getProject(id)
+            console.log(res)
             setProject(res.data[0])
+
+            setTitle(res.data[0]?.title)
+            setDescription(res.data[0]?.description)
+            setUrl(res.data[0]?.url)
+            setTechonologies(res.data[0]?.technologies)
+            setImage(res.data[0]?.image)
+            setDate(res.data[0]?.creation_date)
         } catch (error: any) {
             setError(error?.message)
         }
@@ -140,6 +148,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     value={project?.title}
                     errorMessage={fieldsErrors.title}
                     onChangeValue={(e: any) => {setTitle(e.target.value)}}
+                    isEdit={true}
                 ></CustomInput>
 
                 <CustomInput
@@ -147,6 +156,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     title="Tecnologías"
                     value={project?.technologies}
                     type="text"
+                    isEdit={true}
                     errorMessage={fieldsErrors.technologies}
                     onChangeValue={(e: any) => {setTechonologies(e.target.value)}}
                 ></CustomInput>
@@ -155,6 +165,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     name="date"
                     title="Fecha de creación"
                     type="date"
+                    isEdit={true}
                     value={parseDate(project?.date!)}
                     errorMessage={fieldsErrors.date}
                     onChangeValue={(e: any) => {setDate(e.target.value)}}
@@ -164,6 +175,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     name="url"
                     title="Url"
                     value={project?.url}
+                    isEdit={true}
                     type="url"
                     errorMessage={fieldsErrors.url}
                     onChangeValue={(e: any) => {setUrl(e.target.value)}}
@@ -173,6 +185,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     name="image"
                     title="Imagen"
                     type="file"
+                    isEdit={true}
                     className="col-span-2"
                     errorMessage={fieldsErrors.image}
                     onChangeValue={(e: any) => {setImage(e.target.files[0])}}
@@ -182,6 +195,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     name="description"
                     title="Descripción"
                     className="col-span-2"
+                    isEdit={true}
                     value={project?.description}
                     errorMessage={fieldsErrors.description}
                     onChangeValue={(e: any) => {setDescription(e.target.value)}}

@@ -2,9 +2,23 @@ import { userSchema } from "@/schemas/schemas";
 import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
 import { hashUserPassword, compareUserPassword } from "@/helpers/userPassword";
+import { changeToUSedToken, getAuthToken } from "@/helpers/api/helpers";
 
 export async function GET(req: Request, context: { params: Promise<{ id: string }> }){
     try {
+        // validate token
+        const authToken = await getAuthToken(req.headers.get('authorization'))
+        
+        if(!authToken.valid){
+            return NextResponse.json({"error": "Bearer token not send"})
+        }
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
+
         // get user id
         const { id } = await context.params
 
@@ -24,6 +38,20 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
 
 export async function PUT(req: Request, context: { params: Promise<{ id: string }> }){
     try {
+        // validate token
+
+        const authToken = await getAuthToken(req.headers.get('authorization'))
+        
+        if(!authToken.valid){
+            return NextResponse.json({"error": "Bearer token not send"})
+        }
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
+
         // get user id
         const { id } = await context.params
         const body = await req.json()
@@ -78,6 +106,20 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
 
 export async function DELETE(req: Request, context: { params: Promise<{ id: string }> }){
     try {
+        // validate token
+
+        const authToken = await getAuthToken(req.headers.get('authorization'))
+
+        if(!authToken.valid){
+            return NextResponse.json({"error": "Bearer token not send"})
+        }
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
+
         // get user id
         const { id } = await context.params
 

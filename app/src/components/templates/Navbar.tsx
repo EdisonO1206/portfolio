@@ -13,33 +13,6 @@ import { useRouter } from 'next/navigation'
 const Navbar = () => {
     const router = useRouter()
     const [logedIn, setLogedIn] = useState<boolean>(false)
-    const [validLocation, setValidLocation] = useState<boolean>(false)
-
-    console.log(logedIn)
-
-
-
-    useEffect(() => {
-        async function verifyLocation() {
-            try {
-                const loc = await getUserLocation()
-
-                const locResponse = await getIfValidLocation(loc.lat, loc.lon)
-                if (locResponse?.valid) {
-                    setValidLocation(true)
-                } else {
-                    setValidLocation(false)
-                    console.log(locResponse?.message)
-                }
-            } catch (err: any) {
-                setValidLocation(false)
-                setLogedIn(false)
-                console.log(err?.message || 'Error verificando la ubicación')
-            }
-        }
-        
-        verifyLocation()
-    }, [])
 
     useEffect(() => {
         async function verifyAuth() {
@@ -104,27 +77,25 @@ const Navbar = () => {
                 </div>
                 <div className="hidden w-full md:block md:w-auto" id="navbar-default">
                     <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
-                        {validLocation && (
-                            !logedIn ? (
+                        {!logedIn ? (
+                            <li>
+                                <NavbarLink to='/user/login' text='Iniciar sesión'></NavbarLink>
+                            </li>
+                        ) :
+                        (
+                            <>
                                 <li>
-                                    <NavbarLink to='/user/login' text='Iniciar sesión'></NavbarLink>
+                                    <button 
+                                        className='flex cursor-pointer items-center p-2 rounded-md space-x-3 rtl:space-x-reverse floating-blue'
+                                        onClick={logoutUser}
+                                    >
+                                        Cerrar sesión
+                                    </button>
                                 </li>
-                            ) :
-                            (
-                                <>
-                                    <li>
-                                        <button 
-                                            className='flex cursor-pointer items-center p-2 rounded-md space-x-3 rtl:space-x-reverse floating-blue'
-                                            onClick={logoutUser}
-                                        >
-                                            Cerrar sesión
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <NavbarLink to='/dashboard' text='Dashboard' isSecondary={true}></NavbarLink>
-                                    </li>
-                                </>
-                            )
+                                <li>
+                                    <NavbarLink to='/dashboard' text='Dashboard' isSecondary={true}></NavbarLink>
+                                </li>
+                            </>
                         )}
                         <li>
                             <NavbarButton

@@ -3,11 +3,26 @@ import { loginSchema } from "@/schemas/schemas";
 import prisma from "@/libs/prisma";
 import { compareUserPassword } from "@/helpers/userPassword";
 import jwt from "jsonwebtoken";
+import { changeToUSedToken, getAuthToken } from "@/helpers/api/helpers";
 
 const SECRET = process.env.JWT_SECRET!
 
 export async function POST(req: Request) {
     try {
+        // validate token
+
+        const authToken = await getAuthToken(req.headers.get('authorization'))
+        
+        if(!authToken.valid){
+            return NextResponse.json({"error": "Bearer token not send"})
+        }
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
+
         // get payload
         const body = await req.json()
 
@@ -32,7 +47,7 @@ export async function POST(req: Request) {
         }
 
         // create token
-        const token = jwt.sign({id: res?.id, email: res?.email, password: res?.password,}, SECRET, { expiresIn: "1h" })
+        const token = jwt.sign({id: res?.id, email: res?.email, password: res?.password,}, SECRET, { expiresIn: "24h" })
 
         // return response
         return NextResponse.json(token)

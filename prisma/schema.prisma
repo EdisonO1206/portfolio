@@ -35,8 +35,15 @@ model users {
 
 model tokens {
   id              Int       @id @default(autoincrement())
-  used            Boolean?   @default(false)
+  used            Boolean   @default(false)
   creation_date   DateTime? @db.Timestamp(6)
   expiration_date DateTime? @db.Timestamp(6)
-  token           String?   @db.Text
+  token           String   @db.Text @unique
+}
+
+model otp_codes {
+  id         Int      @id @default(autoincrement())
+  code  String        @unique
+  expires_at DateTime
+  used       Boolean  @default(false)
 }
