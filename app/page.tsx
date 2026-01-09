@@ -4,7 +4,7 @@ import InfoCardsContainer from "./src/components/organisms/InfoCardsContainer";
 
 export default function Home() {
     return (
-        <div className='flex flex-row'>
+        <div className='flex flex-row items-center'>
             <div className='flex flex-col items-center w-5/12'>
                 <Image 
                     src={"/Edison photo.jpg"} 
@@ -26,18 +26,6 @@ export default function Home() {
                 </Title>
             </div>
             <div className='grid grid-cols-2 w-7/12 gap-10 items-center'>
-                <div className="col-span-1 text-justify text-xl">
-                    Soy un apasionado por el aprendizaje, los animales y la tecnología, 
-                    especialmente por el desarrollo de software. 
-                    Me motiva crear soluciones que aporten valor y faciliten la vida de las personas.
-                </div>
-
-                <div className="col-span-1 text-justify text-xl">
-                    Como desarrollador fullstack junior, me especializo en el diseño y desarrollo
-                     de páginas y aplicaciones web modernas, combinando funcionalidad,
-                      rendimiento y una experiencia de usuario atractiva.
-                </div>
-                
                 <InfoCardsContainer></InfoCardsContainer>
             </div>
         </div>

@@ -99,7 +99,6 @@ const NewProjectForm = ( { setVisible, onProjectCreated } : Props ) => {
         }
     }
 
-    console.log(image)
 
     return (
         <PopupBase className="z-50">
