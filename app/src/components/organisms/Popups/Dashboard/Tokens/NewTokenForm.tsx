@@ -78,6 +78,7 @@ const NewTokenForm = ({ onTokenCreated, setVisible } : Props) => {
                     changeColorOnHover={true}
                     titleA='<Nuevo '
                     titleB='Token/>'
+                    titleClassName="text-xl md:text-5xl"
                     subTitle=''
                 ></Title>
                 <button onClick={() => {setVisible(false)}} className='cursor-pointer hover:text-blue-600 hover:rotate-[360deg] transition-all duration-500'>
@@ -85,7 +86,7 @@ const NewTokenForm = ({ onTokenCreated, setVisible } : Props) => {
                 </button>
             </div>
 
-            <FormTemplate className="w-1/2 mx-auto" method="POST" onSend={createNewToken} enctype="multipart/form-data">
+            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewToken} enctype="multipart/form-data">
                 <CustomInput
                     name="expiration_date"
                     title="Fecha de expiración"

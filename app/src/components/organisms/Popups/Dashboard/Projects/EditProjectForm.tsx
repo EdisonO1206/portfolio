@@ -132,19 +132,20 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     changeColorOnHover={true}
                     titleA='<Editar '
                     titleB='Proyecto/>'
+                    titleClassName="text-xl md:text-5xl"
                     inlineTitles={false}
-                    subTitleClassName="text-center"
                     subTitle={project?.title || ''}
                 ></Title>
                 <button onClick={() => {setVisible(false)}} className='cursor-pointer hover:text-blue-600 hover:rotate-[360deg] transition-all duration-500'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
             </div>
-            <FormTemplate className="w-1/2 mx-auto" method="POST" onSend={createNewProject} enctype="multipart/form-data">
+            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewProject} enctype="multipart/form-data">
                 <CustomInput
                     name="title"
                     title="Titulo"
                     type="text"
+                    className="col-span-2"
                     value={project?.title}
                     errorMessage={fieldsErrors.title}
                     onChangeValue={(e: any) => {setTitle(e.target.value)}}
@@ -156,6 +157,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     title="Tecnologías"
                     value={project?.technologies}
                     type="text"
+                    className="col-span-2"
                     isEdit={true}
                     errorMessage={fieldsErrors.technologies}
                     onChangeValue={(e: any) => {setTechonologies(e.target.value)}}
@@ -165,6 +167,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     name="date"
                     title="Fecha de creación"
                     type="date"
+                    className="col-span-2"
                     isEdit={true}
                     value={parseDate(project?.date!)}
                     errorMessage={fieldsErrors.date}
@@ -175,6 +178,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     name="url"
                     title="Url"
                     value={project?.url}
+                    className="col-span-2"
                     isEdit={true}
                     type="url"
                     errorMessage={fieldsErrors.url}

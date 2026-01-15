@@ -47,11 +47,12 @@ const ProjectsPopup = ({ onClose } : Props) => {
             {showDeletion && (<ConfirmationPopup onCancel={() => {setShowDeletion(false)}} onConfirm={async () => {await deleteProject(id!); getData(); setShowDeletion(false)}} />)}
 
             <PopupBase>
-                <div className='flex justify-between border-b pb-4 mb-4'>
+                <div className='flex justify-between border-b pb-4 mb-4 '>
                     <Title 
                         changeColorOnHover={true}
                         titleA='<Proy'
                         titleB='ectos/>'
+                        titleClassName="text-xl md:text-5xl"
                         subTitle=''
                     ></Title>
                     <button onClick={onClose} className='cursor-pointer hover:text-blue-600 hover:rotate-[360deg] transition-all duration-500'>
@@ -59,7 +60,7 @@ const ProjectsPopup = ({ onClose } : Props) => {
                     </button>
                 </div>
                 <div>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex flex-col-reverse md:flex-row justify-between items-center'>
                         <SecondaryTitle 
                             title='Lista de proyectos'
                         ></SecondaryTitle>
@@ -91,9 +92,9 @@ const ProjectsPopup = ({ onClose } : Props) => {
                                 </thead>
                                 <tbody className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
                                     {data.map(element => (
-                                        <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
+                                        <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 items-center'>
                                             <td className="px-6 py-4">{element?.id}</td>
-                                            <td className="px-6 py-4 flex items-center">
+                                            <td className="px-6 py-4flex items-center justify-center">
                                                 <Image
                                                     src={`/uploads/${element?.image}`}
                                                     alt={`Portada proyecto ${element?.title}`}

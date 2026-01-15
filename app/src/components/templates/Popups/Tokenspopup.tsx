@@ -53,6 +53,7 @@ const TokensPopup = ({ onClose } : Props) => {
                         changeColorOnHover={true}
                         titleA='<Tok'
                         titleB='ens/>'
+                        titleClassName="text-xl md:text-5xl"
                         subTitle=''
                     ></Title>
                     <button onClick={onClose} className='cursor-pointer hover:text-blue-600 hover:rotate-[360deg] transition-all duration-500'>
@@ -60,7 +61,7 @@ const TokensPopup = ({ onClose } : Props) => {
                     </button>
                 </div>
                 <div>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex flex-col-reverse md:flex-row justify-between items-center'>
                         <SecondaryTitle 
                             title='Lista de tokens'
                         ></SecondaryTitle>
@@ -90,10 +91,10 @@ const TokensPopup = ({ onClose } : Props) => {
                                 </thead>
                                 <tbody className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
                                     {data.map(element => (
-                                        <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
+                                        <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 items-center'>
                                             <td className="px-6 py-4">{element?.id}</td>
                                             <td className="px-6 py-4 flex flex-col items-center">
-                                                <Button text='Copiar Token' className='mt-10' onClickButton={() => {copyToCLipboard(element?.token, "Texto copiado correctamente", setFlashMessage)}} base={true} ></Button>
+                                                <Button text='Copiar Token' className='mt-10 whitespace-nowrap' onClickButton={() => {copyToCLipboard(element?.token, "Texto copiado correctamente", setFlashMessage)}} base={true} ></Button>
                                                 {flashMessage && <FlashAlert text={flashMessage} changeText={setFlashMessage} />}
                                             </td>
                                             <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{shortDate(element?.creation_date)}</td>

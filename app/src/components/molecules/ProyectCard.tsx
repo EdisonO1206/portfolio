@@ -20,7 +20,8 @@ const ProyectCard = ({description, technologies, title, to, image, className, da
                     loading="eager" 
                     src={`${image}`} 
                     width={100} 
-                    height={100} 
+                    height={100}
+                    style={{width: "100%",}} 
                     alt={`Portada proyecto ${title}`} 
                 />
             </Link>

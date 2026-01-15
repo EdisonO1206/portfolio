@@ -126,6 +126,7 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                     changeColorOnHover={true}
                     titleA='<Editar '
                     titleB='Usuario/>'
+                    titleClassName="text-xl md:text-5xl"
                     subTitle=''
                 ></Title>
                 <button onClick={() => {setVisible(false)}} className='cursor-pointer hover:text-blue-600 hover:rotate-[360deg] transition-all duration-500'>
@@ -133,11 +134,12 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                 </button>
             </div>
 
-            <FormTemplate className="w-1/2 mx-auto" method="POST" onSend={createNewUser} enctype="multipart/form-data">
+            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewUser} enctype="multipart/form-data">
                 <CustomInput
                     name="document"
                     title="Documento"
                     type="number"
+                    className="col-span-2 md:col-span-1"
                     errorMessage={fieldsErrors.document}
                     value={user?.document}
                     onChangeValue={(e: any) => {setDocument(e.target.value)}}
@@ -148,6 +150,7 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                     name="name"
                     title="Nombre"
                     type="text"
+                    className="col-span-2 md:col-span-1"
                     value={user?.name}
                     errorMessage={fieldsErrors.name}
                     onChangeValue={(e: any) => {setName(e.target.value)}}
@@ -158,6 +161,7 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                     name="lastname"
                     title="Apellidos"
                     type="text"
+                    className="col-span-2 md:col-span-1"
                     value={user?.lastname}
                     errorMessage={fieldsErrors.lastname}
                     onChangeValue={(e: any) => {setLastname(e.target.value)}}
@@ -168,6 +172,7 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                     name="email"
                     title="Correo"
                     type="email"
+                    className="col-span-2 md:col-span-1"
                     autocomplete="off"
                     value={user?.email}
                     errorMessage={fieldsErrors.email}
@@ -179,6 +184,7 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                     name="password"
                     title="Contraseña"
                     type="password"
+                    className="col-span-2 md:col-span-1"
                     value={user?.password}
                     errorMessage={fieldsErrors.password}
                     onChangeValue={(e: any) => {setPassword(e.target.value)}}
@@ -189,6 +195,7 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                     name="old_password"
                     title="Contraseña actual"
                     type="password"
+                    className="col-span-2 md:col-span-1"
                     errorMessage={fieldsErrors.old_password}
                     onChangeValue={(e: any) => {setOldPassword(e.target.value)}}
                     isEdit={true}

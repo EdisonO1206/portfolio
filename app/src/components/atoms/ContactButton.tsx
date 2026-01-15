@@ -12,7 +12,7 @@ interface Props {
 
 const ContactButton = ({ to, className, toolTip, image, message, visibleExternalLink = false }: Props) => {
     return (
-        <div className="relative group w-1/4">
+        <div className="relative group w-full lg:w-1/4">
             <Link
                 href={to}
                 target="_blank"
