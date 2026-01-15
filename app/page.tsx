@@ -4,13 +4,13 @@ import InfoCardsContainer from "./src/components/organisms/InfoCardsContainer";
 
 export default function Home() {
     return (
-        <div className='flex flex-row items-center'>
-            <div className='flex flex-col items-center w-5/12'>
+        <div className='flex flex-col lg:flex-row items-center justify-center'>
+            <div className='flex flex-col items-center sm:w-full md:mb-4 lg:w-5/12 justify-center'>
                 <Image 
                     src={"/Edison photo.jpg"} 
                     alt='Edison developer photo'
-                    width={250}
-                    height={300}
+                    width={300}
+                    height={400}
                     className="rounded-full floating-blue mb-4 cursor-pointer"
                     loading="eager"
                 >
@@ -25,7 +25,7 @@ export default function Home() {
                 >
                 </Title>
             </div>
-            <div className='grid grid-cols-2 w-7/12 gap-10 items-center'>
+            <div className='grid grid-cols-2 flex-1 mt-4 md:mt-0 gap-10 items-center justify-items-center w-full'>
                 <InfoCardsContainer></InfoCardsContainer>
             </div>
         </div>

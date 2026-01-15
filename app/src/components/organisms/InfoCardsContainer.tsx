@@ -11,11 +11,11 @@ const InfoCardsContainer = () => {
     const [openCard, setOpenCard] = useState<string | null>(null)
 
     return (
-        <div className='col-span-2'>
-            <div className="grid grid-cols-2 gap-6">
+        <div className='col-span-2 w-full'>
+            <div className="grid grid-cols-1 w-full md:w-3/4 mx-auto md:grid-cols-2 gap-6">
                 {/* stack */}
                 <ExpandibleCard
-                    className='col-span-1'
+                    containerClassName='w-full'
                     image={
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-puzzle-2 text-blue-500">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -38,7 +38,7 @@ const InfoCardsContainer = () => {
 
                 {/* about */}
                 <ExpandibleCard
-                    className='col-span-1'
+                    containerClassName='w-full'
                     image={
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -61,7 +61,7 @@ const InfoCardsContainer = () => {
 
                 {/* projects */}
                 <ExpandibleCard
-                    className='col-span-1'
+                    containerClassName='w-full'
                     image={
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -83,7 +83,7 @@ const InfoCardsContainer = () => {
 
                 {/* contact */}
                 <ExpandibleCard
-                    className='col-span-1'
+                    containerClassName='w-full'
                     image={
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor"

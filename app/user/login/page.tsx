@@ -125,6 +125,7 @@ const Page = () => {
                     titleB='enido/>'
                     changeColorOnHover={true}
                     containerClass='col-span-2 border-b border-blue-600 justify-center pb-2'
+                    titleClassName='text-xl md:text-5xl'
                     subTitle=''
                 ></Title>
 
@@ -152,6 +153,7 @@ const Page = () => {
                     <>
                         <SecondaryTitle
                             title='Código de acceso enviado al correo'
+                            className='col-span-2 text-sm'
                         ></SecondaryTitle>
 
                         <CustomInput
@@ -170,21 +172,21 @@ const Page = () => {
                     <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
                 )}
 
-                <div>
+                <div className='col-span-2'>
                     {!showCode && (
                         <Button
                             text='Siguiente'
                             base={true}
-                            className='w-fit'
+                            className='w-full'
                             onClickButton={() => setShowCode(true)}
                         ></Button>
                     )}
 
                     {showCode && (
-                        <div className='flex flex-row'>
+                        <div className='flex flex-col lg:flex-row gap-0 lg:gap-4'>
                             <CustomInputSubmit
                                 className='col-span-2'
-                                buttonClassName='w-fit justify-center'
+                                buttonClassName='w-full justify-center'
                                 idDisabled={loading}
                                 text='Ingresar'
                             ></CustomInputSubmit>
@@ -192,7 +194,7 @@ const Page = () => {
                             <Button
                                 text='Atrás'
                                 secondary={true}
-                                className='w-fit'
+                                className='w-full'
                                 onClickButton={() => setShowCode(false)}
                             ></Button>
                         </div>

@@ -3,7 +3,6 @@ import { changeToUSedToken, getAuthToken } from "@/helpers/api/helpers";
 import { hashOTP, generateOTP } from "@/helpers/api/helpers";
 import prisma from "@/libs/prisma";
 import { Resend } from "resend"
-import { error } from "console";
 
 const EMAIL = process.env.EMAIL!
 const EMAIL_FROM = process.env.EMAIL_FROM!

@@ -8,6 +8,7 @@ interface Props {
   className?: string
   expanded: boolean
   onToggle: () => void
+  containerClassName?: string;
 }
 
 const ExpandibleCard = ({
@@ -16,11 +17,12 @@ const ExpandibleCard = ({
   title,
   className,
   expanded,
-  onToggle
+  onToggle,
+  containerClassName
 }: Props) => {
   return (
     <>
-        <div className="block focus:outline-2 focus:outline-offset-2 focus:outline-violet-500">
+        <div className={`block focus:outline-2 focus:outline-offset-2 focus:outline-violet-500 ${containerClassName}`}>
             <button
                 className={`cursor-pointer group w-full hover:scale-105 transition-all duration-300 block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 ${className}`}
                 onClick={onToggle}

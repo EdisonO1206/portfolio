@@ -39,7 +39,7 @@ const StackPopup = ({ onClose } : Props) => {
     return (
         <PopupBase>
             <div className='flex justify-between border-b pb-4 mb-4'>
-                <Title titleA="<Mi " titleB="Stack/>" subTitle="" titleClassName="text-3xl" changeColorOnHover={true}></Title>
+                <Title titleA="<Mi " titleB="Stack/>" subTitle="" titleClassName="text-3xl text-xl md:text-5xl" changeColorOnHover={true}></Title>
                 <button onClick={onClose} className='cursor-pointer hover:text-blue-600 hover:rotate-[360deg] transition-all duration-500'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
@@ -50,7 +50,7 @@ const StackPopup = ({ onClose } : Props) => {
             <SecondaryTitle title="Lenguajes de programación"></SecondaryTitle>
             <div className="grid grid-cols-4 gap-6 mt-2 mb-4">
                 {Object.entries(languages).map(object => (
-                    <LineStack key={object[0]} percentage={object[1]} title={object[0]} ></LineStack>
+                    <LineStack key={object[0]} percentage={object[1]} title={object[0]} className="col-span-4 md:col-span-2 lg:col-span-1"></LineStack>
                 ))}
             </div>
 
@@ -58,7 +58,7 @@ const StackPopup = ({ onClose } : Props) => {
             <SecondaryTitle title="Frameworks"></SecondaryTitle>
             <div className="grid grid-cols-4 gap-6 mt-2 mb-4">
                 {Object.entries(frameworks).map(object => (
-                    <LineStack key={object[0]} percentage={object[1]} title={object[0].replace("_", " ")} ></LineStack>
+                    <LineStack key={object[0]} percentage={object[1]} title={object[0].replace("_", " ")} className="col-span-4 md:col-span-2 lg:col-span-1"></LineStack>
                 ))}
             </div>
 
@@ -66,7 +66,7 @@ const StackPopup = ({ onClose } : Props) => {
             <SecondaryTitle title="Arquitecturas"></SecondaryTitle>
             <div className="grid grid-cols-4 gap-6 mt-2 mb-4">
                 {arquitectures.map(o => (
-                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o}></LineStack>
+                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o} className="col-span-4 md:col-span-2 lg:col-span-1"></LineStack>
                 ))}
             </div>
 
@@ -74,7 +74,7 @@ const StackPopup = ({ onClose } : Props) => {
             <SecondaryTitle title="Bases de datos"></SecondaryTitle>
             <div className="grid grid-cols-4 gap-6 mt-2 mb-4">
                 {databases.map(o => (
-                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o}></LineStack>
+                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o} className="col-span-4 md:col-span-2 lg:col-span-1"></LineStack>
                 ))}
             </div>
 
@@ -82,7 +82,7 @@ const StackPopup = ({ onClose } : Props) => {
             <SecondaryTitle title="Metodologías"></SecondaryTitle>
             <div className="grid grid-cols-4 gap-6 mt-2 mb-4">
                 {methodologies.map(o => (
-                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o}></LineStack>
+                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o} className="col-span-4 md:col-span-2 lg:col-span-1"></LineStack>
                 ))}
             </div>
 
@@ -90,7 +90,7 @@ const StackPopup = ({ onClose } : Props) => {
             <SecondaryTitle title="Extras"></SecondaryTitle>
             <div className="grid grid-cols-4 gap-6 mt-2 mb-4">
                 {extras.map(o => (
-                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o}></LineStack>
+                    <LineStack key={o} isVisiblePercentage={false} percentage="100%" title={o} className="col-span-4 md:col-span-2 lg:col-span-1"></LineStack>
                 ))}
             </div>
 

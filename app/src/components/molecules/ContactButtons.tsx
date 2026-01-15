@@ -2,7 +2,7 @@ import ContactButton from "../atoms/ContactButton"
 
 const ContactButtons = () => {
     return (
-        <div className="flex flex-row justify-evenly gap-4 mt-4">
+        <div className="flex flex-col lg:flex-row justify-evenly gap-4 mt-4">
             <ContactButton 
                 message="Correo electronico"
                 to="mailto:andresorozco1206@gmail.com" 

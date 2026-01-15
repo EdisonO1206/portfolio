@@ -47,6 +47,7 @@ const UsersPopup = ({ onClose } : Props) => {
                         changeColorOnHover={true}
                         titleA='<Usua'
                         titleB='rios/>'
+                        titleClassName="text-xl md:text-5xl"
                         subTitle=''
                     ></Title>
                     <button onClick={onClose} className='cursor-pointer hover:text-blue-600 hover:rotate-[360deg] transition-all duration-500'>
@@ -54,7 +55,7 @@ const UsersPopup = ({ onClose } : Props) => {
                     </button>
                 </div>
                 <div>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex flex-col-reverse md:flex-row   justify-between items-center'>
                         <SecondaryTitle 
                             title='Lista de usuarios'
                         ></SecondaryTitle>
@@ -84,7 +85,7 @@ const UsersPopup = ({ onClose } : Props) => {
                                 </thead>
                                 <tbody className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
                                     {data.map(element => (
-                                        <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
+                                        <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 items-center'>
                                             <td className="px-6 py-4">{element?.id}</td>
                                             <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{element?.document}</td>
                                             <td className="px-6 py-4">{element?.name}</td>

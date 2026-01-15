@@ -9,6 +9,12 @@ export const projectSchema = z.object({
     image: z.instanceof(File),
 })
 
+export const messageSchema = z.object({
+    subject: z.string().min(1),
+    message: z.string().min(1),
+    name: z.string().min(1),
+})
+
 export const userSchema = z.object({
     lastname: z.string().min(1),
     name: z.string().min(1),

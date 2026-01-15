@@ -4,13 +4,14 @@ interface Props{
     title: string;
     percentage?: string;
     isVisiblePercentage?: boolean;
+    className?: string;
 }
 
-const LineStack = ({ percentage, title, isVisiblePercentage = true } : Props) => {
+const LineStack = ({ percentage, title, isVisiblePercentage = true, className } : Props) => {
     const number = percentage ? parseInt(percentage) : 0
 
     return (
-        <div className='cursor-pointer group w-full hover:scale-105 transition-all duration-300 block max-w-sm p-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700'>
+        <div className={`cursor-pointer group w-full hover:scale-105 transition-all duration-300 block max-w-sm p-3 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 ${className}`}>
             <div className='w-full font-bold tracking-tight text-gray-900 dark:text-white capitalize flex flex-row justify-between items-center'>
                 <span>{ title }</span>
 

@@ -16,6 +16,7 @@ const ConfirmationPopup = ( { onCancel, onConfirm } : Props ) => {
                     titleB="Irreversible/>"
                     subTitle="¿Estás seguro de realizar esta acción?"
                     inlineTitles={false}
+                    titleClassName="text-xl md:text-5xl"
                     subTitleClassName="text-center mt-4"
                     changeColorOnHover={true}                
                 />
