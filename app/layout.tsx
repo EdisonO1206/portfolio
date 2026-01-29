@@ -25,10 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navbar></Navbar>
-            <main className="p-10 mt-10">{children}</main>
+            <main className="p-10">{children}</main>
         <Footer></Footer>
       </body>
     </html>

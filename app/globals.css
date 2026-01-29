@@ -76,6 +76,11 @@ body {
   transition: transform 0.3s ease;
 }
 
+.floating {
+  animation: float-effect 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
 @keyframes scaleIn {
   0% {
     transform: scale(0.8);
