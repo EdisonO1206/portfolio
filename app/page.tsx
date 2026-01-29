@@ -21,6 +21,7 @@ export default function Home() {
                     changeColorOnHover={true}
                     subTitle='Desarrollador full-stack junior en Medellín 🇨🇴' 
                     inlineTitles={false}
+                    titleClassName="text-center"
                     subTitleClassName='text-xl'
                 >
                 </Title>
