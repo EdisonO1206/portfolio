@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
-import * as crypto from "crypto"
+import crypto from "crypto"
 
 export async function POST(){
     try {

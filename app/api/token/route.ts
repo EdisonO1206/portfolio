@@ -1,7 +1,7 @@
 import prisma from "@/libs/prisma";
 import { tokenSchema } from "@/schemas/schemas";
 import { NextResponse } from "next/server";
-import * as crypto from 'crypto'
+import crypto from 'crypto'
 import { changeToUSedToken, getAuthToken } from "@/helpers/api/helpers";
 
 export async function GET(req: Request){
