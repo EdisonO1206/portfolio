@@ -64,11 +64,30 @@ export async function deleteCookie(){
     }
 }
 
-export async function getUsers(){
+export async function getUsers(limit: number, page:number){
     try {
         const token = await tokenizer()
 
-        const res = await axios.get(`${API_URL}/users`, {
+        const res = await axios.get(`${API_URL}/users?page=${page}&limit=${limit}`, {
+            headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+        })
+
+        if(res.data?.error){
+            return { valid: false, message: res?.data?.error }
+        }
+
+        return { valid: true, data: res?.data }
+
+    } catch (error: any) {
+        return { valid: false, message: error?.message }
+    }
+}
+
+export async function searchUser(searchQuery: string, limit: number, page: number){
+    try {
+        const token = await tokenizer()
+
+        const res = await axios.get(`${API_URL}/users/search?page=${page}&limit=${limit}&search=${searchQuery}`, {
             headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
         })
 

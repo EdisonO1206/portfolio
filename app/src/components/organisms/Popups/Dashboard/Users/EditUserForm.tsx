@@ -8,6 +8,7 @@ import CustomInputSubmit from "@/app/src/components/atoms/CustomInputSubmit"
 
 import { getUser, updateUser } from "@/services/userService"
 import { useState, useEffect } from "react"
+import Loader from "@/app/src/components/templates/Loader"
 
 interface Props{
     setVisible: any;
@@ -37,9 +38,12 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
     const [email, setEmail] = useState<string | null>(null)
     const [password, setPassword] = useState<string | null>(null)
     const [oldPassword, setOldPassword] = useState<string | null>(null)
+    const [loadingData, setLoadingData] = useState<boolean>(false)
 
     async function fetchData(){
         try {
+            setLoadingData(true)
+
             let res = await getUser(id)
             console.log(res)
             setUser(res.data)
@@ -51,6 +55,8 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
             setPassword(res?.data?.password)
         } catch (error: any) {
             setError(error?.message)
+        } finally {
+            setLoadingData(false)
         }
     }
     
@@ -94,9 +100,9 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
     console.log(fieldsErrors)
     console.log(email)
 
-    const createNewUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    const editUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setLoading(false)
+        setLoading(true)
         setError(null)
 
         try {
@@ -133,85 +139,96 @@ const EditUserForm = ( { onUserCreated, setVisible, id } : Props ) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
             </div>
+            {!loading && !loadingData ? (
+                <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={editUser} enctype="multipart/form-data">
+                    <CustomInput
+                        name="document"
+                        title="Documento"
+                        type="number"
+                        className="col-span-2 md:col-span-1"
+                        errorMessage={fieldsErrors.document}
+                        value={user?.document}
+                        onChangeValue={(e: any) => {setDocument(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
 
-            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewUser} enctype="multipart/form-data">
-                <CustomInput
-                    name="document"
-                    title="Documento"
-                    type="number"
-                    className="col-span-2 md:col-span-1"
-                    errorMessage={fieldsErrors.document}
-                    value={user?.document}
-                    onChangeValue={(e: any) => {setDocument(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
+                    <CustomInput
+                        name="name"
+                        title="Nombre"
+                        type="text"
+                        className="col-span-2 md:col-span-1"
+                        value={user?.name}
+                        errorMessage={fieldsErrors.name}
+                        onChangeValue={(e: any) => {setName(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
+                    
+                    <CustomInput
+                        name="lastname"
+                        title="Apellidos"
+                        type="text"
+                        className="col-span-2 md:col-span-1"
+                        value={user?.lastname}
+                        errorMessage={fieldsErrors.lastname}
+                        onChangeValue={(e: any) => {setLastname(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="name"
-                    title="Nombre"
-                    type="text"
-                    className="col-span-2 md:col-span-1"
-                    value={user?.name}
-                    errorMessage={fieldsErrors.name}
-                    onChangeValue={(e: any) => {setName(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
-                
-                <CustomInput
-                    name="lastname"
-                    title="Apellidos"
-                    type="text"
-                    className="col-span-2 md:col-span-1"
-                    value={user?.lastname}
-                    errorMessage={fieldsErrors.lastname}
-                    onChangeValue={(e: any) => {setLastname(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
+                    <CustomInput
+                        name="email"
+                        title="Correo"
+                        type="email"
+                        className="col-span-2 md:col-span-1"
+                        autocomplete="off"
+                        value={user?.email}
+                        errorMessage={fieldsErrors.email}
+                        onChangeValue={(e: any) => {setEmail(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="email"
-                    title="Correo"
-                    type="email"
-                    className="col-span-2 md:col-span-1"
-                    autocomplete="off"
-                    value={user?.email}
-                    errorMessage={fieldsErrors.email}
-                    onChangeValue={(e: any) => {setEmail(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
+                    <CustomInput
+                        name="password"
+                        title="Contraseña"
+                        type="password"
+                        className="col-span-2 md:col-span-1"
+                        value={user?.password}
+                        errorMessage={fieldsErrors.password}
+                        onChangeValue={(e: any) => {setPassword(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="password"
-                    title="Contraseña"
-                    type="password"
-                    className="col-span-2 md:col-span-1"
-                    value={user?.password}
-                    errorMessage={fieldsErrors.password}
-                    onChangeValue={(e: any) => {setPassword(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
+                    <CustomInput
+                        name="old_password"
+                        title="Contraseña actual"
+                        type="password"
+                        className="col-span-2 md:col-span-1"
+                        errorMessage={fieldsErrors.old_password}
+                        onChangeValue={(e: any) => {setOldPassword(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="old_password"
-                    title="Contraseña actual"
-                    type="password"
-                    className="col-span-2 md:col-span-1"
-                    errorMessage={fieldsErrors.old_password}
-                    onChangeValue={(e: any) => {setOldPassword(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
+                    {error && error != null && error != '' && (
+                        <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
+                    )}
 
-                {error && error != null && error != '' && (
-                    <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
-                )}
-
-                <CustomInputSubmit
-                    text="Actualizar"
-                    buttonClassName="w-full justify-center"
-                    className="col-span-2"
-                    idDisabled={loading}
-                ></CustomInputSubmit>
-            </FormTemplate>
+                    <CustomInputSubmit
+                        text="Actualizar"
+                        buttonClassName="w-full justify-center"
+                        className="col-span-2"
+                        idDisabled={loading}
+                    ></CustomInputSubmit>
+                </FormTemplate>
+            ) : (
+                <>
+                    {loading && (
+                        <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message="Actualizando usuario..." />
+                    )}
+                    
+                    {loadingData && (
+                        <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message="Cargando información..." />
+                    )}
+                </>
+            )}
         </PopupBase>
     )
 }

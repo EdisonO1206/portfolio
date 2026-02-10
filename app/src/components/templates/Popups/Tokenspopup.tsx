@@ -11,8 +11,11 @@ import FlashAlert from '../../atoms/FlashAlert'
 import { shortDate } from '@/helpers/convertTypes'
 
 import { copyToCLipboard } from '@/helpers/copyToClipboard'
-import { deleteToken, getTokens } from '@/services/tokenService'
+import { deleteToken, getTokens, searchTokens } from '@/services/tokenService'
 import { useState, useEffect } from 'react'
+import FormTemplate from '../../atoms/FormTemplate'
+import CustomInput from '../../atoms/CustomInput'
+import PaginationButtons from '../../molecules/PaginationButtons'
 
 interface Props{
     onClose: () => void
@@ -27,25 +30,87 @@ const TokensPopup = ({ onClose } : Props) => {
     const [showDeletion, setShowDeletion] = useState<boolean>(false)
     const [flashMessage, setFlashMessage] = useState<string | null>(null);
 
-    const getData = async () => {
-        let data = await getTokens()
+    const [loadingDeletion, setLoadingDeletion] = useState<boolean>(false)
+    const [confirmationError, setConfirmationError] = useState<string>('')
+    const [showSearchWindow, setShowSearchWindow] = useState<boolean>(false)
+    const [page, setPage] = useState<number>(1)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [limit, setLimit] = useState<number>(5)
+    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [hasNextPage, setHasNextPage] = useState<boolean>(false)
 
-        if(!data.valid){
-            setError(data.message)
+    const getData = async () => {
+        setLoading(true)
+        let res = null
+        
+        if(searchQuery && searchQuery.trim() != ''){
+            res = await searchTokens(searchQuery, limit, page)
+        }else{
+            res = await getTokens(limit, page)
         }
 
-        setData(data?.data)
+        if(!res.valid){
+            setError(res.message)
+            return
+        }
+
+        setData(res?.data)
+        setHasNextPage(res?.data.length === limit)
+        setLoading(false)
     }
 
+    // cargar informacion inicial
     useEffect(() => {
         getData()
     }, [])
+
+    // cargar información cuando cambie de pagina
+    useEffect(() => {
+        getData()
+    }, [page, limit])
+
+    // tiempo de espera al terminar de escribir para buscar
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setData([])
+            getData()
+        }, 500)
+
+        return () => clearTimeout(timeout)
+    }, [searchQuery])
+
+    // reiniciar pagina a 1 cuando busque
+    useEffect(() => {
+        setPage(1)
+    }, [searchQuery])
+
+    const handleDeletion = async () => {
+        setLoadingDeletion(true)
+        let res = await deleteToken(id!);
+        
+        if(!res?.valid){
+            setConfirmationError(res?.message)
+            return
+        }
+
+        setLoadingDeletion(false)
+        getData();
+        setShowDeletion(false)
+    }
+
+    const handleCloseSearchWindow = () => {
+        setShowSearchWindow(false);
+        if(searchQuery.trim() !== ''){
+            setSearchQuery(''); 
+            getData()
+        }
+    }
 
     return (
         <>
             {showNewForm && ( <NewTokenForm onTokenCreated={getData} setVisible={setShowNewForm} /> )}
             {showEditForm && (<EditTokenForm setVisible={setShowEditForm} onTokenUpdated={getData} id={id!}  />)}
-            {showDeletion && (<ConfirmationPopup onCancel={() => {setShowDeletion(false)}} onConfirm={async () => {await deleteToken(id!); getData(); setShowDeletion(false)}}  />)}
+            {showDeletion && (<ConfirmationPopup  loading={loadingDeletion} errorMessage={confirmationError} onCancel={() => {setShowDeletion(false)}} onConfirm={handleDeletion}  />)}
 
             <PopupBase>
                 <div className='flex justify-between border-b pb-4 mb-4'>
@@ -61,64 +126,98 @@ const TokensPopup = ({ onClose } : Props) => {
                     </button>
                 </div>
                 <div>
-                    <div className='flex flex-col-reverse md:flex-row justify-between items-center'>
+                    <div className='flex flex-col lg:flex-row justify-between items-center'>
                         <SecondaryTitle 
                             title='Lista de tokens'
+                            className='mb-2'
                         ></SecondaryTitle>
-                        <Button 
-                            text='Agregar token' 
-                            className='bg-green-500 focus:ring-green-300 hover:bg-green-600'
-                            onClickButton={() => { setShowNewForm(true) }}
-                        ></Button>
+                        <div className='flex flex-col-reverse lg:flex-row relative items-center w-full sm:w-auto'>
+                            {showSearchWindow ? (
+                                <div className='animate-fadeInBackdrop flex flex-col-reverse sm:flex-row items-center justify-between gap-4 h-auto sm:max-h-9 mx-4 -translate-y-0.5 '>
+                                    <FormTemplate className='h-auto sm:h-9 shadow-none p-0 gap-0'>
+                                        <CustomInput
+                                            name='search'
+                                            title='Buscar token'
+                                            autocomplete='off'
+                                            onChangeValue={(e: any) => {setSearchQuery(e.target.value);}}
+                                            type='text'
+                                            className='mt-0 -translate-y-5 h-9 col-span-2'
+                                        ></CustomInput>
+                                    </FormTemplate>
+                                    <button onClick={handleCloseSearchWindow}
+                                        className='flex items-center bg-blue-500 focus:ring-blue-300 hover:bg-blue-600 cursor-pointer text-white font-semibold focus:ring-4 rounded-lg text-sm px-5 py-1.5'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                            ) : (
+                                <Button 
+                                    text='Buscar token' 
+                                    className='animate-fadeInBackdrop bg-blue-500 focus:ring-blue-300 hover:bg-blue-600 w-full sm:w-auto'
+                                    onClickButton={() => { setShowSearchWindow(true) }}
+                                ></Button>
+                            )}
+                            <Button 
+                                text='Agregar token' 
+                                className='animate-fadeInBackdrop bg-green-500 focus:ring-green-300 hover:bg-green-600 w-full sm:w-auto'
+                                onClickButton={() => { setShowNewForm(true) }}
+                            ></Button>
+                        </div>
                     </div>
 
                     <div className='mt-4 rounded-md overflow-x-scroll'>
                         {!data && (
                             <Loader error={!!error && error.length > 0} message={error || ''}></Loader>
                         )}
-
-                        {data && data?.length > 0 && (
-                            <table className='w-full rounded-md text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
-                                <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
-                                    <tr>
-                                        <th scope="col" className="px-6 py-3">ID</th>
-                                        <th scope="col" className="px-6 py-3">Token</th>
-                                        <th scope="col" className="px-6 py-3">Fecha de creación</th>
-                                        <th scope="col" className="px-6 py-3">Fecha de expiración</th>
-                                        <th scope="col" className="px-6 py-3">¿Usado?</th>
-                                        <th scope="col" className="px-6 py-3">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
-                                    {data.map(element => (
-                                        <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 items-center'>
-                                            <td className="px-6 py-4">{element?.id}</td>
-                                            <td className="px-6 py-4 flex flex-col items-center">
-                                                <Button text='Copiar Token' className='mt-10 whitespace-nowrap' onClickButton={() => {copyToCLipboard(element?.token, "Texto copiado correctamente", setFlashMessage)}} base={true} ></Button>
-                                                {flashMessage && <FlashAlert text={flashMessage} changeText={setFlashMessage} />}
-                                            </td>
-                                            <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{shortDate(element?.creation_date)}</td>
-                                            <td className="px-6 py-4">{shortDate(element?.expiration_date)}</td>
-                                            <td className="px-6 py-4 capitalize">{String(element?.used)}</td>
-                                            <td className="px-6 py-4 flex flex-col items-center">
-                                                <Button 
-                                                    text='Editar'
-                                                    base={true}
-                                                    onClickButton={() => {setId(element?.id); setShowEditForm(true)}}
-                                                    className='w-full'
-                                                ></Button>
-                                                <Button 
-                                                    text='Eliminar' 
-                                                    className='bg-red-500 focus:ring-red-300 hover:bg-red-600 w-full'
-                                                    onClickButton={() => {setId(element?.id); setShowDeletion(true)}}
-                                                ></Button>
-                                            </td>
+                        
+                        {loading ? (
+                            <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message={'Estamos cargando el contenido'}></Loader>
+                        ) : (
+                            data && data?.length > 0 && (
+                                <table className='w-full rounded-md text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
+                                    <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
+                                        <tr>
+                                            <th scope="col" className="px-6 py-3">ID</th>
+                                            <th scope="col" className="px-6 py-3">Token</th>
+                                            <th scope="col" className="px-6 py-3">Fecha de creación</th>
+                                            <th scope="col" className="px-6 py-3">Fecha de expiración</th>
+                                            <th scope="col" className="px-6 py-3">¿Usado?</th>
+                                            <th scope="col" className="px-6 py-3">Acciones</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
+                                    </thead>
+                                    <tbody className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200'>
+                                        {data.map(element => (
+                                            <tr key={element?.id} className='odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 items-center'>
+                                                <td className="px-6 py-4">{element?.id}</td>
+                                                <td className="px-6 py-4 flex flex-col items-center">
+                                                    <Button text='Copiar Token' className='mt-10 whitespace-nowrap' onClickButton={() => {copyToCLipboard(element?.token, "Texto copiado correctamente", setFlashMessage)}} base={true} ></Button>
+                                                    {flashMessage && <FlashAlert text={flashMessage} changeText={setFlashMessage} />}
+                                                </td>
+                                                <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{shortDate(element?.creation_date)}</td>
+                                                <td className="px-6 py-4">{shortDate(element?.expiration_date)}</td>
+                                                <td className="px-6 py-4 capitalize">{String(element?.used)}</td>
+                                                <td className="px-6 py-4 flex flex-col items-center">
+                                                    <Button 
+                                                        text='Editar'
+                                                        base={true}
+                                                        onClickButton={() => {setId(element?.id); setShowEditForm(true)}}
+                                                        className='w-full'
+                                                    ></Button>
+                                                    <Button 
+                                                        text='Eliminar' 
+                                                        className='bg-red-500 focus:ring-red-300 hover:bg-red-600 w-full'
+                                                        onClickButton={() => {setId(element?.id); setShowDeletion(true)}}
+                                                    ></Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                        ))}
                     </div>
+                    {/* botones de paginación */}
+                    {hasNextPage && (
+                        <PaginationButtons limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
+                    )}
                 </div>
             </PopupBase>
         </>

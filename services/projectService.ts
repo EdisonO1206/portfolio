@@ -3,11 +3,30 @@ import { tokenizer } from "./tokenService";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-export async function getProjects(){
+export async function getProjects(limit:number, page:number){
     try {
         const token = await tokenizer()
 
-        const res = await axios.get(`${API_URL}/projects`, {
+        const res = await axios.get(`${API_URL}/projects?limit=${limit}&page=${page}`, {
+            headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+        })
+
+        if(res.data?.error){
+            return { valid: false, message: res?.data?.error }
+        }
+
+        return { valid: true, data: res?.data }
+
+    } catch (error: any) {
+        return { valid: false, message: error?.message }
+    }
+}
+
+export async function searchProject(searchParams: string, limit: number, page: number){
+    try {
+        const token = await tokenizer()
+
+        const res = await axios.get(`${API_URL}/projects/search?limit=${limit}&page=${page}&search=${searchParams}`, {
             headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
         })
 

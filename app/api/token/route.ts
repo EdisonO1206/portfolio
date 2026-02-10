@@ -12,14 +12,14 @@ export async function GET(req: Request){
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
+        // get tokens
+        const res = await prisma.tokens.findMany()
+
         const changed = await changeToUSedToken(authToken?.token)
 
         if(!changed.valid){
             return NextResponse.json({"error": changed.message})
         }
-
-        // get tokens
-        const res = await prisma.tokens.findMany()
 
         // return response
         return NextResponse.json(res)

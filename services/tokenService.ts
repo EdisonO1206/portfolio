@@ -16,11 +16,29 @@ export async function tokenizer(){
     }
 }
 
-export async function getTokens(){
+export async function getTokens(limit: number, page: number){
     try {
         const token = await tokenizer()
 
-        const res = await axios.get(`${API_URL}/token`, {
+        const res = await axios.get(`${API_URL}/token?limit=${limit}&page=${page}`, {
+            headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+        })
+
+        if(res?.data?.error){
+            return {valid: false, message: res?.data?.error}
+        }
+
+        return {valid: true, data: res?.data}
+    } catch (error: any) {
+        return {valid: false, message: error?.message}
+    }
+}
+
+export async function searchTokens(searchQuery: string, limit: number, page: number){
+    try {
+        const token = await tokenizer()
+
+        const res = await axios.get(`${API_URL}/token/search?search=${searchQuery}&limit=${limit}&page=${page}`, {
             headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
         })
 

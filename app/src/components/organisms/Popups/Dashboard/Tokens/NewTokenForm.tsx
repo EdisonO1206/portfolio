@@ -5,6 +5,7 @@ import FormTemplate from "@/app/src/components/atoms/FormTemplate"
 import ErrorMessage from "@/app/src/components/atoms/ErrorMessage"
 import CustomInputSubmit from "@/app/src/components/atoms/CustomInputSubmit"
 import CustomSelect from "@/app/src/components/atoms/CustomSelect"
+import Loader from "@/app/src/components/templates/Loader"
 
 import { stringToDate, stringToBoolean } from "@/helpers/convertTypes"
 import { createToken } from "@/services/tokenService"
@@ -47,7 +48,7 @@ const NewTokenForm = ({ onTokenCreated, setVisible } : Props) => {
 
     const createNewToken = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setLoading(false)
+        setLoading(true)
         setError(null) 
         
         try {
@@ -85,37 +86,40 @@ const NewTokenForm = ({ onTokenCreated, setVisible } : Props) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
             </div>
+            {!loading ? (
+                <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewToken} enctype="multipart/form-data">
+                    <CustomInput
+                        name="expiration_date"
+                        title="Fecha de expiración"
+                        type="date"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.expiration_date}
+                        onChangeValue={(e: any) => {setDate(e.target.value)}}
+                    ></CustomInput>
 
-            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewToken} enctype="multipart/form-data">
-                <CustomInput
-                    name="expiration_date"
-                    title="Fecha de expiración"
-                    type="date"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.expiration_date}
-                    onChangeValue={(e: any) => {setDate(e.target.value)}}
-                ></CustomInput>
+                    <CustomSelect
+                        name="used"
+                        options={[false, true]}
+                        className="col-span-2"
+                        title="¿Usado?"
+                        errorMessage={fieldsErrors.used}
+                        onChangeValue={(e: any) => {setUsed(e.target.value)}}
+                    ></CustomSelect>
 
-                <CustomSelect
-                    name="used"
-                    options={[false, true]}
-                    className="col-span-2"
-                    title="¿Usado?"
-                    errorMessage={fieldsErrors.used}
-                    onChangeValue={(e: any) => {setUsed(e.target.value)}}
-                ></CustomSelect>
+                    {error && error != null && error != '' && (
+                        <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
+                    )}
 
-                {error && error != null && error != '' && (
-                    <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
-                )}
-
-                <CustomInputSubmit
-                    text="Crear"
-                    buttonClassName="w-full justify-center"
-                    className="col-span-2"
-                    idDisabled={loading}
-                ></CustomInputSubmit>
-            </FormTemplate>
+                    <CustomInputSubmit
+                        text="Crear"
+                        buttonClassName="w-full justify-center"
+                        className="col-span-2"
+                        idDisabled={loading}
+                    ></CustomInputSubmit>
+                </FormTemplate>
+            ) : (
+                <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message="Creando token..." />
+            )}
         </PopupBase>
     )
 }

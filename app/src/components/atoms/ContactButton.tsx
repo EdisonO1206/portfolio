@@ -7,12 +7,12 @@ interface Props {
     image?: any;
     message?: string;
     visibleExternalLink?: boolean;
-
+    containerClassname?: string;
 }
 
-const ContactButton = ({ to, className, toolTip, image, message, visibleExternalLink = false }: Props) => {
+const ContactButton = ({ to, className, containerClassname, toolTip, image, message, visibleExternalLink = false }: Props) => {
     return (
-        <div className="relative group w-full lg:w-1/4">
+        <div className={`relative group w-full lg:w-1/4 ${containerClassname}`}>
             <Link
                 href={to}
                 target="_blank"

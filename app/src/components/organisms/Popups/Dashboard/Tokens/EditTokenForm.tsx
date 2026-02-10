@@ -11,6 +11,7 @@ import CustomSelect from "@/app/src/components/atoms/CustomSelect"
 import { stringToDate, stringToBoolean, shortDate } from "@/helpers/convertTypes"
 import { getToken, updateToken as updateDBToken } from "@/services/tokenService"
 import { useState, useEffect } from "react"
+import Loader from "@/app/src/components/templates/Loader"
 
 interface Fields{
     used?: string;
@@ -33,10 +34,13 @@ const EditTokenForm = ({ onTokenUpdated, setVisible, id } : Props) => {
     const [date, setDate] = useState<string | null>(null)
     const [creationDate, setCreationDate] = useState<string | null>(null)
     const [used, setUsed] = useState<string | null>(null)
+    const [loadingData, setLoadingData] = useState<boolean>(false)
 
 
     async function fetchData(){
         try {
+            setLoadingData(true)
+
             let res = await getToken(id)
             console.log(res)
             setToken(res.data)
@@ -46,6 +50,8 @@ const EditTokenForm = ({ onTokenUpdated, setVisible, id } : Props) => {
             setUsed(String(res?.data?.used))
         } catch (error: any) {
             setError(error?.message)
+        } finally {
+            setLoadingData(false)
         }
     }
         
@@ -76,7 +82,7 @@ const EditTokenForm = ({ onTokenUpdated, setVisible, id } : Props) => {
 
     const updateToken = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setLoading(false)
+        setLoading(true)
         setError(null) 
         
         try {
@@ -114,54 +120,65 @@ const EditTokenForm = ({ onTokenUpdated, setVisible, id } : Props) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
             </div>
+            {!loading && !loadingData ? (
+                <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={updateToken} enctype="multipart/form-data">
+                    <CustomInput
+                        name="creation_date"
+                        title="Fecha de creación"
+                        type="date"
+                        value={shortDate(creationDate!)}
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.creation_date}
+                        onChangeValue={(e: any) => {setCreationDate(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
 
-            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={updateToken} enctype="multipart/form-data">
-                <CustomInput
-                    name="creation_date"
-                    title="Fecha de creación"
-                    type="date"
-                    value={shortDate(creationDate!)}
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.creation_date}
-                    onChangeValue={(e: any) => {setCreationDate(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
 
+                    <CustomInput
+                        name="expiration_date"
+                        title="Fecha de expiración"
+                        type="date"
+                        value={shortDate(date!)}
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.expiration_date}
+                        onChangeValue={(e: any) => {setDate(e.target.value)}}
+                        isEdit={true}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="expiration_date"
-                    title="Fecha de expiración"
-                    type="date"
-                    value={shortDate(date!)}
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.expiration_date}
-                    onChangeValue={(e: any) => {setDate(e.target.value)}}
-                    isEdit={true}
-                ></CustomInput>
+                    <CustomSelect
+                        selected=""
+                        name="used"
+                        options={[false, true]}
+                        value={used}
+                        className="col-span-2"
+                        title="¿Usado?"
+                        errorMessage={fieldsErrors.used}
+                        onChangeValue={(e: any) => {setUsed(e.target.value)}}
+                        isEdit={true}
+                    ></CustomSelect>
 
-                <CustomSelect
-                    selected=""
-                    name="used"
-                    options={[false, true]}
-                    value={used}
-                    className="col-span-2"
-                    title="¿Usado?"
-                    errorMessage={fieldsErrors.used}
-                    onChangeValue={(e: any) => {setUsed(e.target.value)}}
-                    isEdit={true}
-                ></CustomSelect>
+                    {error && error != null && error != '' && (
+                        <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
+                    )}
 
-                {error && error != null && error != '' && (
-                    <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
-                )}
-
-                <CustomInputSubmit
-                    text="Crear"
-                    buttonClassName="w-full justify-center"
-                    className="col-span-2"
-                    idDisabled={loading}
-                ></CustomInputSubmit>
-            </FormTemplate>
+                    <CustomInputSubmit
+                        text="Crear"
+                        buttonClassName="w-full justify-center"
+                        className="col-span-2"
+                        idDisabled={loading}
+                    ></CustomInputSubmit>
+                </FormTemplate>
+            ) : (
+                <>
+                    {loading && (
+                        <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message="Actualizando token..." />
+                    )}
+                    
+                    {loadingData && (
+                        <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message="Cargando información..." />
+                    )}
+                </>
+            )}
         </PopupBase>
     )
 }

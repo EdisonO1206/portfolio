@@ -14,12 +14,6 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
-        const changed = await changeToUSedToken(authToken?.token)
-
-        if(!changed.valid){
-            return NextResponse.json({"error": changed.message})
-        }
-
         // get project id
         const { id } = await context.params
 
@@ -28,6 +22,12 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
                 id: Number(id)
             }
         })
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
 
         // return project
         return NextResponse.json(res)
