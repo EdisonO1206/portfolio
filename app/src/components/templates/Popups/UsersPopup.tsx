@@ -6,9 +6,12 @@ import SecondaryTitle from '../../atoms/SecondaryTitle'
 import ConfirmationPopup from '../../organisms/Popups/ConfirmationPopup'
 import NewUserForm from '../../organisms/Popups/Dashboard/Users/NewUserForm'
 import EditUserForm from '../../organisms/Popups/Dashboard/Users/EditUserForm'
+import FormTemplate from '../../atoms/FormTemplate'
+import CustomInput from '../../atoms/CustomInput'
 
 import { useState, useEffect } from 'react'
-import { getUsers, deleteUser } from '@/services/userService'
+import { getUsers, deleteUser, searchUser } from '@/services/userService'
+import PaginationButtons from '../../molecules/PaginationButtons'
 
 interface Props{
     onClose: () => void
@@ -21,25 +24,89 @@ const UsersPopup = ({ onClose } : Props) => {
     const [showNewForm, setShowNewForm] = useState<boolean>(false)
     const [showEditForm, setShowEditForm] = useState<boolean>(false)
     const [showDeletion, setShowDeletion] = useState<boolean>(false)
+    const [loadingDeletion, setLoadingDeletion] = useState<boolean>(false)
+    const [confirmationError, setConfirmationError] = useState<string>('')
+    const [showSearchWindow, setShowSearchWindow] = useState<boolean>(false)
+    const [page, setPage] = useState<number>(1)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [limit, setLimit] = useState<number>(5)
+    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [hasNextPage, setHasNextPage] = useState<boolean>(false)
 
+
+    // funcion auxiliar para cargar informacion
     const getData = async () => {
-        let data = await getUsers()
+        setLoading(true)
 
-        if(!data.valid){
-            setError(data.message)
+        let res = null
+
+        if(searchQuery && searchQuery.trim() != ''){
+            res = await searchUser(searchQuery, limit, page)
+        }else{
+            res = await getUsers(limit, page)
         }
 
-        setData(data.data)
+        if(!res.valid){
+            setError(res.message)
+            return
+        }
+
+        setData(res.data)
+        setHasNextPage(res?.data.length === limit)
+        setLoading(false)
     }
 
+    // cargar informacion inicial
     useEffect(() => {
         getData()
     }, [])
 
+    // cargar información cuando cambie de pagina
+    useEffect(() => {
+        getData()
+    }, [page, limit])
+
+    // tiempo de espera al terminar de escribir para buscar
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setData([])
+            getData()
+        }, 500)
+
+        return () => clearTimeout(timeout)
+    }, [searchQuery])
+
+    // reiniciar pagina a 1 cuando busque
+    useEffect(() => {
+        setPage(1)
+    }, [searchQuery])
+
+    const handleDeletion = async () => {
+        setLoadingDeletion(true)
+        let res = await deleteUser(id!);
+
+        if(!res?.valid){
+            setConfirmationError(res?.message)
+            return
+        }
+
+        setLoadingDeletion(false)
+        getData();
+        setShowDeletion(false);
+    }
+
+    const handleCloseSearchWindow = () => {
+        setShowSearchWindow(false);
+        if(searchQuery.trim() !== ''){
+            setSearchQuery(''); 
+            getData()
+        }
+    }
+
     return <>
         {showNewForm && (<NewUserForm setVisible={setShowNewForm} onUserCreated={getData}  />)}
         {showEditForm && (<EditUserForm setVisible={setShowEditForm} onUserCreated={getData} id={id!}  />)}
-        {showDeletion && (<ConfirmationPopup onCancel={() => {setShowDeletion(false)}} onConfirm={async () => {await deleteUser(id!); getData(); setShowDeletion(false)}}  />)}
+        {showDeletion && (<ConfirmationPopup errorMessage={confirmationError} loading={loadingDeletion} onCancel={() => {setShowDeletion(false)}} onConfirm={handleDeletion}  />)}
 
         <PopupBase>
                 <div className='flex justify-between border-b pb-4 mb-4'>
@@ -55,15 +122,42 @@ const UsersPopup = ({ onClose } : Props) => {
                     </button>
                 </div>
                 <div>
-                    <div className='flex flex-col-reverse md:flex-row   justify-between items-center'>
+                    <div className='flex flex-col lg:flex-row justify-between items-center'>
                         <SecondaryTitle 
                             title='Lista de usuarios'
+                            className='mb-2'
                         ></SecondaryTitle>
-                        <Button 
-                            text='Agregar usuario' 
-                            className='bg-green-500 focus:ring-green-300 hover:bg-green-600'
-                            onClickButton={() => { setShowNewForm(true) }}
-                        ></Button>
+                        <div className='flex flex-col-reverse lg:flex-row relative items-center w-full sm:w-auto'>
+                            {showSearchWindow ? (
+                                <div className='animate-fadeInBackdrop flex flex-col-reverse sm:flex-row items-center justify-between gap-4 h-auto sm:max-h-9 mx-4 -translate-y-0.5 '>
+                                    <FormTemplate className='h-auto sm:h-9 shadow-none p-0 gap-0'>
+                                        <CustomInput
+                                            name='search'
+                                            title='Buscar usuario'
+                                            autocomplete='off'
+                                            onChangeValue={(e: any) => {setSearchQuery(e.target.value);}}
+                                            type='text'
+                                            className='mt-0 -translate-y-5 h-9 col-span-2'
+                                        ></CustomInput>
+                                    </FormTemplate>
+                                    <button onClick={handleCloseSearchWindow}
+                                        className='flex items-center bg-blue-500 focus:ring-blue-300 hover:bg-blue-600 cursor-pointer text-white font-semibold focus:ring-4 rounded-lg text-sm px-5 py-1.5'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                            ) : (
+                                <Button 
+                                    text='Buscar usuario' 
+                                    className='animate-fadeInBackdrop bg-blue-500 focus:ring-blue-300 hover:bg-blue-600 w-full sm:w-auto'
+                                    onClickButton={() => { setShowSearchWindow(true) }}
+                                ></Button>
+                            )}
+                            <Button 
+                                text='Agregar usuario' 
+                                className='animate-fadeInBackdrop bg-green-500 focus:ring-green-300 hover:bg-green-600 w-full sm:w-auto'
+                                onClickButton={() => { setShowNewForm(true) }}
+                            ></Button>
+                        </div>
                     </div>
 
                     <div className='mt-4 rounded-md overflow-x-scroll'>
@@ -71,8 +165,11 @@ const UsersPopup = ({ onClose } : Props) => {
                             <Loader error={!!error && error.length > 0} message={error || ''}></Loader>
                         )}
 
-                        {data && data?.length > 0 && (
-                            <table className='w-full rounded-md text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
+                        {loading ? (
+                            <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message={'Estamos cargando el contenido'}></Loader>
+                        ) : (
+                        data && data?.length > 0 ? (
+                            <table className='whitespace-nowrap w-full rounded-md text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
                                 <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
                                     <tr>
                                         <th scope="col" className="px-6 py-3">ID</th>
@@ -108,8 +205,30 @@ const UsersPopup = ({ onClose } : Props) => {
                                     ))}
                                 </tbody>
                             </table>
-                        )}
+                        ) : (
+                            <div className='flex flex-col items-center justify-center pb-10'>
+                                <Title 
+                                    changeColorOnHover={true}
+                                    titleA='<SinEle'
+                                    titleB='mentos/>'
+                                    inlineTitles={false}
+                                    containerClass='text-center py-10'
+                                    subTitle='Vaya... parece que no se han encontrado elementos puedes intentar de nuevo'
+                                ></Title>
+
+                                <Button 
+                                    text='Reiniciar' 
+                                    className='animate-fadeInBackdrop border bg-blue-500 focus:ring-blue-300 hover:bg-blue-600 w-full sm:w-auto'
+                                    onClickButton={() => { setLimit(10); setPage(1); }}
+                                ></Button>
+                            </div>
+                        ))}
                     </div>
+
+                    {/* botones de paginación */}
+                    {hasNextPage && (
+                        <PaginationButtons limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
+                    )}
                 </div>
             </PopupBase>
     </>

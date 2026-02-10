@@ -17,12 +17,6 @@ export async function POST(req: Request) {
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
-        const changed = await changeToUSedToken(authToken?.token)
-
-        if(!changed.valid){
-            return NextResponse.json({"error": changed.message})
-        }
-
         // get payload
         const body = await req.json()
 
@@ -48,6 +42,12 @@ export async function POST(req: Request) {
 
         // create token
         const token = jwt.sign({id: res?.id, email: res?.email, password: res?.password,}, SECRET, { expiresIn: "24h" })
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
 
         // return response
         return NextResponse.json(token)

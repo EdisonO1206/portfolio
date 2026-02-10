@@ -3,17 +3,18 @@ import Title from '../atoms/Title'
 interface Props{
     message?: string;
     error?: boolean;
+    className?: string;
 }
 
-const Loader = ( { message = "Regalame unos instantes mientras cargo el contenido...", error } : Props ) => {
+const Loader = ( { message = "Regalame unos instantes mientras cargo el contenido...", error, className } : Props ) => {
     return (
-        <div className='flex flex-col justify-center items-center min-h-[60vh]'>
+        <div className={`flex flex-col justify-center items-center min-h-[60vh] ${className}`}>
             <Title
                 titleA={error ? "<Upps " : '<Carga'}
                 titleB={error ? "Error/>" : 'ndo/>'}
                 subTitle={message}
                 inlineTitles={false}
-                titleClassName={error ? 'text-red-500' : ''}
+                titleClassName={`text-xl md:text-5xl ${error ? 'text-red-500' : ''}`}
                 subTitleClassName={error ? 'text-red-500' : ''}
                 changeColorOnHover={true}
             ></Title>

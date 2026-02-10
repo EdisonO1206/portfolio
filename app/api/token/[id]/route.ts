@@ -30,12 +30,6 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
-        const changed = await changeToUSedToken(authToken?.token)
-
-        if(!changed.valid){
-            return NextResponse.json({"error": changed.message})
-        }
-
         // get payload
         const { id } = await context.params
         const body = await req.json()
@@ -57,6 +51,12 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
                 id: Number(id)
             }
         })
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
 
         // return response
         return NextResponse.json(res)

@@ -7,6 +7,7 @@ import FormTemplate from "@/app/src/components/atoms/FormTemplate"
 import Title from "@/app/src/components/atoms/Title"
 import PopupBase from "@/app/src/components/molecules/PopupBase"
 import ErrorMessage from "@/app/src/components/atoms/ErrorMessage"
+import Loader from "@/app/src/components/templates/Loader"
 
 import { createProject } from "@/services/projectService"
 import { useState } from "react"
@@ -72,7 +73,7 @@ const NewProjectForm = ( { setVisible, onProjectCreated } : Props ) => {
 
     const createNewProject = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setLoading(false)
+        setLoading(true)
         setError(null)
 
         try {
@@ -114,70 +115,77 @@ const NewProjectForm = ( { setVisible, onProjectCreated } : Props ) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
             </div>
-            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewProject} enctype="multipart/form-data">
-                <CustomInput
-                    name="title"
-                    title="Titulo"
-                    type="text"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.title}
-                    onChangeValue={(e: any) => {setTitle(e.target.value)}}
-                ></CustomInput>
+            
+            {!loading ? (
+                <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewProject} enctype="multipart/form-data">
+                    <CustomInput
+                        name="title"
+                        title="Titulo"
+                        type="text"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.title}
+                        onChangeValue={(e: any) => {setTitle(e.target.value)}}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="technologies"
-                    title="Tecnologías"
-                    type="text"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.technologies}
-                    onChangeValue={(e: any) => {setTechonologies(e.target.value)}}
-                ></CustomInput>
+                    <CustomInput
+                        name="technologies"
+                        title="Tecnologías"
+                        type="text"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.technologies}
+                        onChangeValue={(e: any) => {setTechonologies(e.target.value)}}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="date"
-                    title="Fecha de creación"
-                    type="date"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.date}
-                    onChangeValue={(e: any) => {setDate(e.target.value)}}
-                ></CustomInput>
+                    <CustomInput
+                        name="date"
+                        title="Fecha de creación"
+                        type="date"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.date}
+                        onChangeValue={(e: any) => {setDate(e.target.value)}}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="url"
-                    title="Url"
-                    type="url"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.url}
-                    onChangeValue={(e: any) => {setUrl(e.target.value)}}
-                ></CustomInput>
+                    <CustomInput
+                        name="url"
+                        title="Url"
+                        type="url"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.url}
+                        onChangeValue={(e: any) => {setUrl(e.target.value)}}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="image"
-                    title="Imagen"
-                    type="file"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.image}
-                    onChangeValue={(e: any) => {setImage(e.target.files[0])}}
-                ></CustomInput>
+                    <CustomInput
+                        name="image"
+                        title="Imagen"
+                        type="file"
+                        filename={image?.name}
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.image}
+                        onChangeValue={(e: any) => {setImage(e.target.files[0])}}
+                    ></CustomInput>
 
-                <CustomTextarea
-                    name="description"
-                    title="Descripción"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.description}
-                    onChangeValue={(e: any) => {setDescription(e.target.value)}}
-                ></CustomTextarea>
+                    <CustomTextarea
+                        name="description"
+                        title="Descripción"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.description}
+                        onChangeValue={(e: any) => {setDescription(e.target.value)}}
+                    ></CustomTextarea>
 
-                {error && error != null && error != '' && (
-                    <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
-                )}
+                    {error && error != null && error != '' && (
+                        <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
+                    )}
 
-                <CustomInputSubmit
-                    text="Crear"
-                    buttonClassName="w-full justify-center"
-                    className="col-span-2"
-                ></CustomInputSubmit>
-            </FormTemplate>
+                    <CustomInputSubmit
+                        text="Crear"
+                        buttonClassName="w-full justify-center"
+                        className="col-span-2"
+                    ></CustomInputSubmit>
+                </FormTemplate>
+            ) : (
+                <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message="Creando proyecto..." />
+            )}
+
         </PopupBase>
     )
 }

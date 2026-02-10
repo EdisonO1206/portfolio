@@ -12,12 +12,6 @@ export async function POST(req: Request) {
         return NextResponse.json({"error": authToken.message})
     }
 
-    const changed = await changeToUSedToken(authToken?.token)
-
-    if(!changed.valid){
-        return NextResponse.json({"error": changed.message})
-    }
-
     const body = await req.json()
 
     const validated = OTPSchema.parse(body)
@@ -43,6 +37,12 @@ export async function POST(req: Request) {
                 where: { id: row.id },
                 data: { used: true }
             })
+
+            const changed = await changeToUSedToken(authToken?.token)
+
+            if(!changed.valid){
+                return NextResponse.json({"error": changed.message})
+            }
 
             return NextResponse.json({ success: true })
         }

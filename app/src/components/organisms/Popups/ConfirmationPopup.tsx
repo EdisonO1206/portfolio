@@ -1,16 +1,19 @@
 import Title from "../../atoms/Title";
 import PopupBase from "../../molecules/PopupBase";
 import Button from "../../atoms/Button";
+import React from "react";
 
 interface Props{
     onConfirm: () => void;
     onCancel: () => void;
+    loading: boolean;
+    errorMessage?: string;
 }
 
-const ConfirmationPopup = ( { onCancel, onConfirm } : Props ) => {
+const ConfirmationPopup = ( { onCancel, onConfirm, loading, errorMessage } : Props ) => {
     return (
         <PopupBase className="z-50">
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex py-10 flex-col items-center justify-center">
                 <Title 
                     titleA="<Acción "
                     titleB="Irreversible/>"
@@ -21,11 +24,16 @@ const ConfirmationPopup = ( { onCancel, onConfirm } : Props ) => {
                     changeColorOnHover={true}                
                 />
 
+                {errorMessage?.trim() !== '' && (
+                    <p className="text-red-500">{errorMessage}</p>
+                )}
+
                 <div className="flex justify-between mt-10 w-1/2">
                     <Button
                         text="Confirmar"
                         base={true}
-                        onClickButton={onConfirm}
+                        disabled={loading}
+                        onClickButton={() => { onConfirm() }}
                     ></Button>
                     <Button
                         secondary={true}

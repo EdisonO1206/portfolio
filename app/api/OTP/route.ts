@@ -19,12 +19,6 @@ export async function POST(req: Request){
             return NextResponse.json({"error": authToken.message})
         }
 
-        const changed = await changeToUSedToken(authToken?.token)
-
-        if(!changed.valid){
-            return NextResponse.json({"error": changed.message})
-        }
-
         const otp = await generateOTP()
         const otpHash = await hashOTP(otp)
 
@@ -47,6 +41,12 @@ export async function POST(req: Request){
                 <p>Este código expira en 5 minutos.</p>
             `
         })
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
 
         return NextResponse.json(res)
 

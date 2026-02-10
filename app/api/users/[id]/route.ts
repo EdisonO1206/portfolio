@@ -114,12 +114,6 @@ export async function DELETE(req: Request, context: { params: Promise<{ id: stri
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
-        const changed = await changeToUSedToken(authToken?.token)
-
-        if(!changed.valid){
-            return NextResponse.json({"error": changed.message})
-        }
-
         // get user id
         const { id } = await context.params
 
@@ -129,6 +123,12 @@ export async function DELETE(req: Request, context: { params: Promise<{ id: stri
                 id: Number(id)
             }
         })
+
+        const changed = await changeToUSedToken(authToken?.token)
+
+        if(!changed.valid){
+            return NextResponse.json({"error": changed.message})
+        }
 
         // return response
         return NextResponse.json(res)

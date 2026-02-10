@@ -15,14 +15,23 @@ export async function GET(req: Request){
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
+        const { searchParams } = new URL(req.url)
+
+        const page = Number(searchParams.get("page")) || 1
+        const limit = Number(searchParams.get("limit")) || 10
+
+        // get projects
+        const projects = await prisma.projects.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: { id: "desc" }
+        })
+
         const changed = await changeToUSedToken(authToken?.token)
 
         if(!changed.valid){
             return NextResponse.json({"error": changed.message})
         }
-
-        // get projects
-        const projects = await prisma.projects.findMany()
 
         // return projects
         return NextResponse.json(projects)

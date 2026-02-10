@@ -4,6 +4,7 @@ import PopupBase from "@/app/src/components/molecules/PopupBase"
 import FormTemplate from "@/app/src/components/atoms/FormTemplate"
 import ErrorMessage from "@/app/src/components/atoms/ErrorMessage"
 import CustomInputSubmit from "@/app/src/components/atoms/CustomInputSubmit"
+import Loader from "@/app/src/components/templates/Loader"
 
 import { createUser } from "@/services/userService"
 import { useState } from "react"
@@ -103,63 +104,67 @@ const NewUserForm = ( { onUserCreated, setVisible } : Props ) => {
                 </button>
             </div>
 
-            <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewUser} enctype="multipart/form-data">
-                <CustomInput
-                    name="document"
-                    title="Documento"
-                    type="number"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.document}
-                    onChangeValue={(e: any) => {setDocument(e.target.value)}}
-                ></CustomInput>
+            {!loading ? (
+                <FormTemplate className="md:w-1/2 mx-auto" method="POST" onSend={createNewUser} enctype="multipart/form-data">
+                    <CustomInput
+                        name="document"
+                        title="Documento"
+                        type="number"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.document}
+                        onChangeValue={(e: any) => {setDocument(e.target.value)}}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="name"
-                    title="Nombre"
-                    type="text"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.name}
-                    onChangeValue={(e: any) => {setName(e.target.value)}}
-                ></CustomInput>
-                
-                <CustomInput
-                    name="lastname"
-                    title="Apellidos"
-                    type="text"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.lastname}
-                    onChangeValue={(e: any) => {setLastname(e.target.value)}}
-                ></CustomInput>
+                    <CustomInput
+                        name="name"
+                        title="Nombre"
+                        type="text"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.name}
+                        onChangeValue={(e: any) => {setName(e.target.value)}}
+                    ></CustomInput>
+                    
+                    <CustomInput
+                        name="lastname"
+                        title="Apellidos"
+                        type="text"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.lastname}
+                        onChangeValue={(e: any) => {setLastname(e.target.value)}}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="email"
-                    title="Correo"
-                    type="email"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.email}
-                    onChangeValue={(e: any) => {setEmail(e.target.value)}}
-                ></CustomInput>
+                    <CustomInput
+                        name="email"
+                        title="Correo"
+                        type="email"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.email}
+                        onChangeValue={(e: any) => {setEmail(e.target.value)}}
+                    ></CustomInput>
 
-                <CustomInput
-                    name="password"
-                    title="Contraseña"
-                    type="password"
-                    className="col-span-2"
-                    errorMessage={fieldsErrors.password}
-                    onChangeValue={(e: any) => {setPassword(e.target.value)}}
-                ></CustomInput>
+                    <CustomInput
+                        name="password"
+                        title="Contraseña"
+                        type="password"
+                        className="col-span-2"
+                        errorMessage={fieldsErrors.password}
+                        onChangeValue={(e: any) => {setPassword(e.target.value)}}
+                    ></CustomInput>
 
-                {error && error != null && error != '' && (
-                    <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
-                )}
+                    {error && error != null && error != '' && (
+                        <ErrorMessage errorMessage={typeof error === 'string' ? error : ''} className='col-span-2'></ErrorMessage>
+                    )}
 
-                <CustomInputSubmit
-                    text="Crear"
-                    buttonClassName="w-full justify-center"
-                    className="col-span-2"
-                    idDisabled={loading}
-                ></CustomInputSubmit>
-            </FormTemplate>
+                    <CustomInputSubmit
+                        text="Crear"
+                        buttonClassName="w-full justify-center"
+                        className="col-span-2"
+                        idDisabled={loading}
+                    ></CustomInputSubmit>
+                </FormTemplate>
+            ) : (
+                <Loader className='w-full min-h-auto block mx-auto p-10 bg-gray-900' message="Creando usuario..." />
+            )}
         </PopupBase>
     )
 }
