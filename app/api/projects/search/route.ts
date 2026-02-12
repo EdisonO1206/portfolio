@@ -36,13 +36,18 @@ export async function GET(req: Request){
             orderBy: { id: "desc" }
         })
 
+        const totalPages = Math.ceil(res?.length / limit)
+
         const changed = await changeToUSedToken(authToken?.token)
 
         if(!changed.valid){
             return NextResponse.json({"error": changed.message})
         }
 
-        return NextResponse.json(res)
+        return NextResponse.json({
+            projects: res,
+            totalPages
+        })
     } catch (error: any) {
         return NextResponse.json({error: error?.message})
     }

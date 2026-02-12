@@ -27,11 +27,12 @@ interface Props{
 
 const ProyectsPopup = ( { onClose } : Props) => {
     const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(5)
+    const [limit, setLimit] = useState<number>(6)
     const [loading, setLoading] = useState<boolean>(false)
     const [hasNextPage, setHasNextPage] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [projects, setProjects] = useState<Fields[] | null>(null)
+    const [totalPages, setTotalPages] = useState<number>(0)
 
     const getData = async () => {
         try {
@@ -44,8 +45,9 @@ const ProyectsPopup = ( { onClose } : Props) => {
                 return
             }
 
-            setProjects(res?.data)
-            setHasNextPage(res?.data.length === limit)
+            setProjects(res?.data?.projects)
+            setTotalPages(res?.data?.totalPages)
+            setHasNextPage(res?.data?.projects.length === limit)
 
         } catch (error: any) {
             setError(error?.message)
@@ -93,7 +95,7 @@ const ProyectsPopup = ( { onClose } : Props) => {
 
                                 {/* botones de paginación */}
                                 {hasNextPage && (
-                                    <PaginationButtons limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
+                                    <PaginationButtons length={projects?.length} totalPages={totalPages} limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
                                 )}
                             </>
                         )

@@ -3,28 +3,37 @@
 import Title from '../atoms/Title'
 import NavbarLink from '../atoms/NavbarLink'
 import NavbarButton from '../atoms/NavbarButton'
+import axios from 'axios'
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { checkIfAuth, deleteCookie } from '@/services/userService'
+import { deleteCookie } from '@/services/userService'
 import { useRouter } from 'next/navigation'
+import { tokenizer } from '@/services/tokenService'
 
 const Navbar = () => {
     const router = useRouter()
     const [logedIn, setLogedIn] = useState<boolean>(false)
     const [visible, setVisible] = useState<boolean>(false)
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
 
     useEffect(() => {
         async function verifyAuth() {
             try {
-            const res = await checkIfAuth()
-            if (res?.valid && res.cookie) {
+                const token = await tokenizer()
+                const res = await axios.post(`${API_URL}/users/check`, {}, {
+                    headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+                })
+
+                if(res?.data?.error){ 
+                    setLogedIn(false)
+                    console.log(res?.data?.error)
+                    return 
+                }
+
                 setLogedIn(true)
-            } else {
-                setLogedIn(false)
-            }
             } catch {
-            setLogedIn(false)
+                setLogedIn(false)
             }
         }
 

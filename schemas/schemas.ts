@@ -6,7 +6,10 @@ export const projectSchema = z.object({
     creation_date: z.coerce.date(),
     url: z.string(),
     technologies: z.string().min(1),
-    image: z.instanceof(File),
+    image: z.union([
+        z.instanceof(File),
+        z.string()
+    ])
 })
 
 export const messageSchema = z.object({

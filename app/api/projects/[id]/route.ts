@@ -71,7 +71,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         // destructure paylaod
         const { title, description, creation_date, url, technologies, image } = validated
 
-        const filename = await saveFile(image)
+        const filename = typeof image === "string" ? image : await saveFile(image)
 
         // save data in database
         const res = await prisma.projects.update({

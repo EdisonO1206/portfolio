@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/deleteTokens",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/deleteOtps",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
