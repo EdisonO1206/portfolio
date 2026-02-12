@@ -5,16 +5,16 @@ const securityHeaders = [
   {
     key: "Content-Security-Policy",
     value: `
-      default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval';
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      img-src 'self' data: blob: https:;
-      font-src 'self' https://fonts.gstatic.com data:;
-      connect-src 'self' https:;
-      frame-ancestors 'none';
-      base-uri 'self';
-      form-action 'self';
-    `.replace(/\n/g, ""),
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    img-src 'self' data: blob: https:;
+    font-src 'self' https://fonts.gstatic.com data:;
+    connect-src 'self' https: wss: ws:;
+    frame-ancestors 'none';
+    base-uri 'self';
+    form-action 'self';
+  `.replace(/\n/g, ""),
   },
   {
     key: "Strict-Transport-Security",

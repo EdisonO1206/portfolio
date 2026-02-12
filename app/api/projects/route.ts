@@ -27,6 +27,10 @@ export async function GET(req: Request){
             orderBy: { id: "desc" }
         })
 
+        const totalProjects = await prisma.projects.count()
+
+        const totalPages = Math.ceil(totalProjects / limit)
+
         const changed = await changeToUSedToken(authToken?.token)
 
         if(!changed.valid){
@@ -34,7 +38,10 @@ export async function GET(req: Request){
         }
 
         // return projects
-        return NextResponse.json(projects)
+        return NextResponse.json({
+            projects: projects,
+            totalPages,
+        })
     }catch(error: any){
         return NextResponse.json({"error": error?.message})
     }
@@ -75,7 +82,7 @@ export async function POST(req: Request){
         // destructure paylaod
         const { title, description, creation_date, url, technologies, image } = validated
 
-        const filename = await saveFile(image)
+        const filename = typeof image === "string" ? image : await saveFile(image)
 
         // save data in database
         const res = await prisma.projects.create({

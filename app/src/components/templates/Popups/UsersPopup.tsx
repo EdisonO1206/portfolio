@@ -27,9 +27,10 @@ const UsersPopup = ({ onClose } : Props) => {
     const [loadingDeletion, setLoadingDeletion] = useState<boolean>(false)
     const [confirmationError, setConfirmationError] = useState<string>('')
     const [showSearchWindow, setShowSearchWindow] = useState<boolean>(false)
+    const [totalPages, setTotalPages] = useState<number>(0)
     const [page, setPage] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
-    const [limit, setLimit] = useState<number>(5)
+    const [limit, setLimit] = useState<number>(10)
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [hasNextPage, setHasNextPage] = useState<boolean>(false)
 
@@ -51,8 +52,9 @@ const UsersPopup = ({ onClose } : Props) => {
             return
         }
 
-        setData(res.data)
-        setHasNextPage(res?.data.length === limit)
+        setData(res.data?.users)
+        setTotalPages(res?.data?.totalPages)
+        setHasNextPage(res?.data?.users.length === limit)
         setLoading(false)
     }
 
@@ -227,7 +229,7 @@ const UsersPopup = ({ onClose } : Props) => {
 
                     {/* botones de paginación */}
                     {hasNextPage && (
-                        <PaginationButtons limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
+                        <PaginationButtons length={data!.length} limit={limit} totalPages={totalPages} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
                     )}
                 </div>
             </PopupBase>

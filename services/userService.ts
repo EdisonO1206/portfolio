@@ -41,16 +41,6 @@ export async function createCookie(token: string){
     }
 }
 
-export async function checkIfAuth(){
-    try {
-        const cookieStore = await cookies()
-        const cookie = cookieStore.get('userToken')
-        return { valid: true, cookie: cookie }
-    } catch (error: any) {
-        return { valid: false, message: error?.message }
-    }
-}
-
 export async function deleteCookie(){
     try {
         const cookieStore = await cookies()

@@ -35,7 +35,8 @@ const TokensPopup = ({ onClose } : Props) => {
     const [showSearchWindow, setShowSearchWindow] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [loading, setLoading] = useState<boolean>(false)
-    const [limit, setLimit] = useState<number>(5)
+    const [limit, setLimit] = useState<number>(20)
+    const [totalPages, setTotalPages] = useState<number>(0)
     const [searchQuery, setSearchQuery] = useState<string>('')
     const [hasNextPage, setHasNextPage] = useState<boolean>(false)
 
@@ -54,8 +55,11 @@ const TokensPopup = ({ onClose } : Props) => {
             return
         }
 
-        setData(res?.data)
-        setHasNextPage(res?.data.length === limit)
+        console.log(res)
+
+        setData(res?.data?.tokens)
+        setTotalPages(res?.data?.totalPages)
+        setHasNextPage(res?.data?.tokens.length === limit)
         setLoading(false)
     }
 
@@ -216,7 +220,7 @@ const TokensPopup = ({ onClose } : Props) => {
                     </div>
                     {/* botones de paginación */}
                     {hasNextPage && (
-                        <PaginationButtons limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
+                        <PaginationButtons length={data!.length} totalPages={totalPages} limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
                     )}
                 </div>
             </PopupBase>

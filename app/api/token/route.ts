@@ -12,8 +12,21 @@ export async function GET(req: Request){
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
+        // validate params
+        const { searchParams } = new URL(req.url)
+
+        const page = Number(searchParams.get("page")) || 1
+        const limit = Number(searchParams.get("limit")) || 10 
+
         // get tokens
-        const res = await prisma.tokens.findMany()
+        const res = await prisma.tokens.findMany({
+            skip: (page - 1) * limit,
+            take: limit,
+            orderBy: { id: "desc" }
+        })
+
+        const totalTokens = await prisma.tokens.count()
+        const totalPages = Math.ceil(totalTokens / limit)
 
         const changed = await changeToUSedToken(authToken?.token)
 
@@ -22,7 +35,10 @@ export async function GET(req: Request){
         }
 
         // return response
-        return NextResponse.json(res)
+        return NextResponse.json({
+            tokens: res,
+            totalPages
+        })
     } catch (error: any) {
         return NextResponse.json({"error": error?.message})
     }

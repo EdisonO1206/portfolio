@@ -12,6 +12,7 @@ import ConfirmationPopup from '../../organisms/Popups/ConfirmationPopup'
 import PaginationButtons from '../../molecules/PaginationButtons'
 import NewProjectForm from '../../organisms/Popups/Dashboard/Projects/NewProjectForm'
 import EditProjectForm from '../../organisms/Popups/Dashboard/Projects/EditProjectForm'
+import Link from 'next/link'
 
 import { parseDate } from '@/helpers/date'
 import { useState, useEffect } from 'react'
@@ -26,7 +27,7 @@ const ProjectsPopup = ({ onClose } : Props) => {
     const [loadingDeletion, setLoadingDeletion] = useState<boolean>(false)
     const [id, setId] = useState<number | null>(null)
     const [page, setPage] = useState<number>(1)
-    const [limit, setLimit] = useState<number>(5)
+    const [limit, setLimit] = useState<number>(10)
     const [showNewForm, setShowNewForm] = useState<boolean>(false)
     const [showSearchWindow, setShowSearchWindow] = useState<boolean>(false)
     const [showEditForm, setShowEditForm] = useState<boolean>(false)
@@ -36,6 +37,7 @@ const ProjectsPopup = ({ onClose } : Props) => {
     const [error, setError] = useState<string | null>(null)
     const [confirmationError, setConfirmationError] = useState<string>('')
     const [hasNextPage, setHasNextPage] = useState<boolean>(false)
+    const [totalPages, setTotalPages] = useState<number>(0)
 
     // función auxiliar para cargar la información
     async function getData(){
@@ -49,13 +51,16 @@ const ProjectsPopup = ({ onClose } : Props) => {
             res = await getProjects(limit, page)
         }
 
+        console.log(res)
+
         if(!res.valid){
             setError(res.message)
             return
         }
 
-        setData(res.data)
-        setHasNextPage(res?.data.length === limit)
+        setData(res.data?.projects)
+        setTotalPages(res?.data?.totalPages)
+        setHasNextPage(res?.data?.projects.length === limit)
         setLoading(false)
     }
     
@@ -210,8 +215,8 @@ const ProjectsPopup = ({ onClose } : Props) => {
                                                 <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{element?.title}</td>
                                                 <td className="px-6 py-4">{element?.technologies}</td>
                                                 <td className="px-6 py-4">{parseDate(element?.creation_date)}</td>
-                                                <td className="px-6 py-4">{element?.url}</td>
-                                                <td className="px-6 py-4">{element?.description}</td>
+                                                <td className="px-6 py-4"><Link href={element?.url} target="_blank">{element?.url}</Link></td>
+                                                <td className="px-6 py-4">{element?.description.slice(0, 50)}...</td>
                                                 <td className="px-6 py-4 flex flex-col items-center">
                                                     <Button 
                                                         text='Editar'
@@ -252,7 +257,7 @@ const ProjectsPopup = ({ onClose } : Props) => {
 
                     {/* botones de paginación */}
                     {hasNextPage && (
-                        <PaginationButtons limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
+                        <PaginationButtons totalPages={totalPages} length={data!.length} limit={limit} onLimitChange={setLimit} hasNextPage={hasNextPage} page={page} onPageChange={setPage} />
                     )}
                 </div>
             </PopupBase>

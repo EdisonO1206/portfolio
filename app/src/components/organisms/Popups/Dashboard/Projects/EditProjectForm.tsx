@@ -25,7 +25,7 @@ interface Fields{
     url?: string;
     image?: string;
     technologies?: string;
-    date?: string;
+    creation_date?: string;
 }
 
 const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
@@ -40,7 +40,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
     const [url, setUrl] = useState<string | null>(null)
     const [technologies, setTechonologies] = useState<string | null>(null)
     const [image, setImage] = useState<File | null>(null)
-    const [date, setDate] = useState<string | null>(null)
+    const [creation_date, setCreation_Date] = useState<string | null>(null)
 
     async function fetchData(){
         try {
@@ -55,7 +55,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
             setUrl(res.data[0]?.url)
             setTechonologies(res.data[0]?.technologies)
             setImage(res.data[0]?.image)
-            setDate(res.data[0]?.creation_date)
+            setCreation_Date(res.data[0]?.creation_date)
         } catch (error: any) {
             setError(error?.message)
         } finally {
@@ -89,8 +89,8 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
             errors.url = "La URL no es válida."
         }
 
-        if (!date) {
-            errors.date = "Debes seleccionar una fecha."
+        if (!creation_date) {
+            errors.creation_date = "Debes seleccionar una fecha."
         }
 
         if (!image) {
@@ -113,7 +113,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                 return
             }
 
-            const res = await editProject(id!, title!, description!, technologies!, url!, date!, image!)
+            const res = await editProject(id!, title!, description!, technologies!, url!, creation_date!, image!)
 
             if(!res.valid){
                 setError(res.message)
@@ -176,9 +176,9 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                         type="date"
                         className="col-span-2"
                         isEdit={true}
-                        value={parseDate(project?.date!)}
-                        errorMessage={fieldsErrors.date}
-                        onChangeValue={(e: any) => {setDate(e.target.value)}}
+                        value={parseDate(project?.creation_date!)}
+                        errorMessage={fieldsErrors.creation_date}
+                        onChangeValue={(e: any) => {setCreation_Date(e.target.value)}}
                     ></CustomInput>
 
                     <CustomInput

@@ -33,6 +33,10 @@ export async function POST(req: Request) {
             }
         })
 
+        if (!res) {
+            return NextResponse.json({ "error": "Usuario no existe" })
+            }
+
         // validate password
         const valid_password = compareUserPassword(password, String(res?.password))
 
@@ -41,7 +45,7 @@ export async function POST(req: Request) {
         }
 
         // create token
-        const token = jwt.sign({id: res?.id, email: res?.email, password: res?.password,}, SECRET, { expiresIn: "24h" })
+        const token = jwt.sign({ id: res!.id, email: res!.email }, SECRET, { expiresIn: "24h" })
 
         const changed = await changeToUSedToken(authToken?.token)
 

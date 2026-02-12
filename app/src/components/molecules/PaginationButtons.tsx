@@ -6,17 +6,23 @@ interface Props{
     hasNextPage: boolean;
     onPageChange: (page: number) => void;
     onLimitChange: (limit: number) => void;
+    totalPages: number;
+    length: number;
 }
 
-const PaginationButtons = ({ hasNextPage, onPageChange, page, limit, onLimitChange } : Props) => {
+const PaginationButtons = ({ hasNextPage, onPageChange, page, limit, onLimitChange, totalPages, length } : Props) => {
     const options = [5, 10, 20, 50]
+
+    console.log(totalPages)
 
     return (
         <nav aria-label="Page navigation" className='mt-4 flex flex-col md:flex-row items-center justify-between w-full'>
 
-            <div className="w-1/12"></div>
+            <div className="w-2/12">
+                <p>Mostrando {length} {length > 1 ? 'registros' : 'registro'}</p>
+            </div>
 
-            <ul className="flex justify-center items-center w-10/12 -space-x-px text-sm">
+            <ul className="flex justify-center items-center w-9/12 -space-x-px text-sm">
                 <li>
                     <button 
                         disabled={page === 1}
@@ -30,19 +36,21 @@ const PaginationButtons = ({ hasNextPage, onPageChange, page, limit, onLimitChan
                 </li>
                 
                 <li>
-                    <span className="px-10 py-2">Página {page}</span>
+                    <span className="px-10 py-2">Página {page} de {totalPages}</span>
                 </li>
 
-                <li>
-                    <button 
-                        disabled={!hasNextPage}
-                        onClick={() => onPageChange(page + 1)}
-                        className="cursor-pointer transition-all duration-300 rounded-r-md flex items-center justify-center text-blue-500 hover:bg-gray-800 border text-sm w-11 h-11 focus:outline-none"
-                    >
-                        <span className="sr-only">Next</span>
-                        <svg className="w-4 h-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m9 5 7 7-7 7"/></svg>
-                    </button>
-                </li>
+                {totalPages != page && page < totalPages  && (
+                    <li>
+                        <button 
+                            disabled={!hasNextPage}
+                            onClick={() => onPageChange(page + 1)}
+                            className="cursor-pointer transition-all duration-300 rounded-r-md flex items-center justify-center text-blue-500 hover:bg-gray-800 border text-sm w-11 h-11 focus:outline-none"
+                        >
+                            <span className="sr-only">Next</span>
+                            <svg className="w-4 h-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m9 5 7 7-7 7"/></svg>
+                        </button>
+                    </li>
+                )}
             </ul>
 
             <CustomSelect 

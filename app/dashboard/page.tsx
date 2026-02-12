@@ -1,30 +1,15 @@
 'use client'
 
-import SecondaryTitle from "../src/components/atoms/SecondaryTitle"
 import Title from "../src/components/atoms/Title"
 import ExpandibleCard from "../src/components/atoms/ExpandibleCard"
 import ProjectsPopup from "../src/components/templates/Popups/ProjectsPopup"
 import UsersPopup from "../src/components/templates/Popups/UsersPopup"
 import TokensPopup from "../src/components/templates/Popups/Tokenspopup"
 
-import { getGitHubStats } from "@/services/dashboard"
-import { useState, useEffect } from "react"
-
-interface Stats{
-    repos?: number;
-    following?: number;
-    followers?: number;
-    pullRequests?: number;
-    stars?: number;
-}
+import { useState } from "react"
 
 const page = () => {
     const [openCard, setOpenCard] = useState<string | null>(null)
-    const [stats, setStats] = useState<Stats>({});
-
-    useEffect(() => {
-        getGitHubStats().then(setStats);
-    }, []);
 
     return (
         <div>
@@ -39,7 +24,7 @@ const page = () => {
                 inlineTitles={false}
             ></Title>
 
-            <div className="grid grid-cols-3 gap-6 mt-6">
+            <div className="grid grid-cols-3 gap-6 mt-6 ">
                 <ExpandibleCard 
                     title="Proyectos"
                     image={
@@ -52,7 +37,7 @@ const page = () => {
                             <path d="M6 8h.01" /><path d="M9 8h.01" />
                         </svg>
                     }
-                    containerClassName="col-span-3 sm:col-span-1"
+                    containerClassName="col-span-3 flex justify-center"
                     expanded={openCard === "projects"}
                     onToggle={() =>
                         setOpenCard(openCard === "projects" ? null : "projects")
@@ -76,7 +61,7 @@ const page = () => {
                             <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
                         </svg>
                     }
-                    containerClassName="col-span-3 sm:col-span-1"                  
+                    containerClassName="col-span-3 flex justify-center"                  
                     expanded={openCard === "users"}
                     onToggle={() =>
                         setOpenCard(openCard === "users" ? null : "users")
@@ -97,7 +82,7 @@ const page = () => {
                             <path d="M15 9h.01" />
                         </svg>
                     }
-                    containerClassName="col-span-3 sm:col-span-1"                 
+                    containerClassName="col-span-3 flex justify-center"                 
                     expanded={openCard === "tokens"}
                     onToggle={() =>
                         setOpenCard(openCard === "tokens" ? null : "tokens")
@@ -105,43 +90,6 @@ const page = () => {
                 >
                     <TokensPopup onClose={() => setOpenCard(null)}></TokensPopup>
                 </ExpandibleCard>
-            </div>
-
-            <div className="flex flex-col items-center mt-10 w-full md:w-8/12 mx-auto">
-                <SecondaryTitle
-                    title="Github Stats"
-                ></SecondaryTitle>
-
-                <div className="flex flex-col lg:flex-row gap-4 justify-center items-center mt-4">
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-brand-github">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
-                        </svg>
-                    </div>
-                    <div className="grid grid-cols-3 gap-6">
-                        <div className="col-span-3 sm:col-span-1 cursor-pointer  w-full hover:scale-105 transition-all duration-300 block  p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                            <SecondaryTitle title="Repositorios" />
-                            <p className="text-center text-2xl font-bold">{stats.repos}</p>
-                        </div>
-                        <div className="col-span-3 sm:col-span-1 cursor-pointer  w-full hover:scale-105 transition-all duration-300 block  p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                            <SecondaryTitle title="Seguidores" />
-                            <p className="text-center text-2xl font-bold">{stats.followers}</p>
-                        </div>
-                        <div className="col-span-3 sm:col-span-1 cursor-pointer  w-full hover:scale-105 transition-all duration-300 block  p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                            <SecondaryTitle title="Siguiendo" />
-                            <p className="text-center text-2xl font-bold">{stats.following}</p>
-                        </div>
-                        <div className="col-span-3 sm:col-span-1 cursor-pointer  w-full hover:scale-105 transition-all duration-300 block  p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                            <SecondaryTitle title="Estrellas" />
-                            <p className="text-center text-2xl font-bold">{stats.stars}</p>
-                        </div>
-                        <div className="col-span-3 sm:col-span-1 cursor-pointer w-full hover:scale-105 transition-all duration-300 block  p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                            <SecondaryTitle title="Pull Requests" />
-                            <p className="text-center text-2xl font-bold">{stats.pullRequests}</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     )
