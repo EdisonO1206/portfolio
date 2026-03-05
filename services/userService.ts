@@ -31,10 +31,10 @@ export async function getUserLoginToken(email: string, password:string) {
     }
 }
 
-export async function createCookie(token: string){
+export async function saveLocalStorage(token: string){
     try {
         const cookieStore = await cookies()
-        cookieStore.set("userToken", token)
+        localStorage.set("userToken", token)
         return { valid: true }
     } catch (error: any) {
         return { valid: false, message: error?.message }
@@ -167,5 +167,25 @@ export async function deleteUser(id: number){
 
     } catch (error: any) {
         return { valid: false, message: error?.message }
+    }
+}
+
+export async function verifyAuth(userToken: string) {
+    try {
+        const token = await tokenizer()
+
+        const payload = { token: userToken }
+
+        const res = await axios.post(`${API_URL}/users/check`, payload, {
+            headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
+        })
+
+        if(res?.data?.error){ 
+            return { valid: false, error: res?.data?.error }
+        }
+
+        return { valid: true }
+    } catch(error: any) {
+        return { valid: false, error: error?.message }
     }
 }

@@ -3,72 +3,14 @@
 import Title from '../atoms/Title'
 import NavbarLink from '../atoms/NavbarLink'
 import NavbarButton from '../atoms/NavbarButton'
-import axios from 'axios'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { deleteCookie } from '@/services/userService'
-import { useRouter } from 'next/navigation'
-import { tokenizer } from '@/services/tokenService'
+import { useState } from 'react'
+import { useAuth } from '@/app/context/AuthContext'
 
 const Navbar = () => {
-    const router = useRouter()
-    const [logedIn, setLogedIn] = useState<boolean>(false)
+    const { logout, isAuthenticated } = useAuth()
     const [visible, setVisible] = useState<boolean>(false)
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
-
-    useEffect(() => {
-        async function verifyAuth() {
-            try {
-                const token = await tokenizer()
-                const res = await axios.post(`${API_URL}/users/check`, {}, {
-                    headers: {Authorization: `Bearer ${token?.data}`,"Content-Type": "application/json",},
-                })
-
-                if(res?.data?.error){ 
-                    setLogedIn(false)
-                    console.log(res?.data?.error)
-                    return 
-                }
-
-                setLogedIn(true)
-            } catch {
-                setLogedIn(false)
-            }
-        }
-
-        verifyAuth()
-    }, [])
-
-    useEffect(() => {
-        const channel = new BroadcastChannel('auth')
-        channel.onmessage = (event) => {
-            if (event.data.action === 'logout') {
-                setLogedIn(false)
-            }
-            if (event.data.action === 'login') {
-                setLogedIn(true)
-            }
-        }
-        return () => channel.close()
-    }, [])
-
-    const logoutUser = async (e: any) => {
-        try {
-            e.preventDefault()
-            const res = await deleteCookie()
-            if(!res.valid){
-                console.log(res.message)
-            }
-            const channel = new BroadcastChannel('auth')
-            channel.postMessage({ action: 'logout' })
-            channel.close()
-            router.push("/")
-            router.refresh()
-        } catch (error: any) {
-            console.log(error?.message)
-        }
-    }
 
     return (
         <nav className="">
@@ -95,7 +37,7 @@ const Navbar = () => {
                     id="navbar-default"
                 >
                     <ul className="font-medium flex flex-col-reverse p-10 md:p-4 mt-4 bg-black gap-2 rounded-lg md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 dark:bg-gray-800 dark:border-gray-700 floating">
-                        {!logedIn ? (
+                        {!isAuthenticated ? (
                             <li>
                                 <NavbarLink isSecondary={true} to='/user/login' text='Iniciar sesión'></NavbarLink>
                             </li>
@@ -105,7 +47,7 @@ const Navbar = () => {
                                 <li>
                                     <button
                                         className='cursor-pointer flex items-center p-2 dark:hover:bg-gray-700 hover:scale-105 transition-all duration-300 ease-in-out rounded-t-md space-x-3 rtl:space-x-reverse border border-black shadow-[0_2px_0_0_black] hover:shadow-[0_8px_0_0_black]'
-                                        onClick={logoutUser}
+                                        onClick={() => {logout()}}
                                     >
                                         Cerrar sesión
                                     </button>

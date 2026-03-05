@@ -41,3 +41,7 @@ export const tokenSchema = z.object({
 export const OTPSchema = z.object({
     OTP: z.string().min(1),
 })
+
+export const checkSchema = z.object({
+    token: z.string().min(10),
+})

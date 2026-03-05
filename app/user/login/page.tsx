@@ -9,10 +9,11 @@ import Loader from '@/app/src/components/templates/Loader'
 import Button from '@/app/src/components/atoms/Button'
 import Title from '@/app/src/components/atoms/Title'
 
+import { useAuth } from '@/app/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { sendCode, validateOTPCode } from '@/services/otpService'
-import { getUserLoginToken, createCookie } from '@/services/userService'
+import { getUserLoginToken, saveLocalStorage } from '@/services/userService'
 
 interface FieldsErrors{
     email?: string;
@@ -22,6 +23,7 @@ interface FieldsErrors{
 
 const Page = () => {
     const router = useRouter()
+    const { login } = useAuth()
     const [error, setError] = useState<string | null>(null)
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
@@ -86,23 +88,13 @@ const Page = () => {
                 return 
             }
 
-            const token = await getUserLoginToken(email, password)
-            
-            if(!token.valid){
-                setError(token.message)
-                return
-            }
+            const res = await login(email, password)
 
-            const createdCookie = await createCookie(token.token)
-
-            if(!createdCookie.valid){
-                setError(token.message)
+            if(!res.valid && res.error){
+                setError(res?.error)
                 return
             }
             
-            const channel = new BroadcastChannel('auth')
-            channel.postMessage({ action: 'login' })
-            channel.close()
 
             router.refresh()
             return router.push("/")
@@ -115,9 +107,9 @@ const Page = () => {
     }
 
     return (
-        <div className='flex justify-center'>
+        <div className='flex justify-center mb-10'>
             <FormTemplate 
-                className='rounded-md w-fit px-7 '
+                className='rounded-md w-fit px-7'
                 onSend={handleUserLogin}
             >
                 <Title
@@ -135,6 +127,8 @@ const Page = () => {
                             name='email'
                             title='Correo'
                             type='email'
+                            autocomplete='email'
+                            value={email}
                             className='col-span-2'
                             errorMessage={fieldsErrors.email}
                             onChangeValue={(e: any) => {setEmail(e.target.value)}}
@@ -144,6 +138,8 @@ const Page = () => {
                             name='password'
                             title='Contraseña'
                             type='password'
+                            value={password}
+                            autocomplete='password'
                             className='col-span-2'
                             errorMessage={fieldsErrors.password}
                             onChangeValue={(e: any) => {setPassword(e.target.value)}}
@@ -157,10 +153,17 @@ const Page = () => {
                         ></SecondaryTitle>
 
                         <CustomInput
+                            name='hidden'
+                            type='hidden'
+                            title='hidden'
+                            className='hidden'
+                        ></CustomInput>
+
+                        <CustomInput
                             name='otp_code'
                             title='Código de acceso'
                             type='text'
-                            autocomplete='off'
+                            autocomplete='one-time-code'
                             className='col-span-2'
                             errorMessage={fieldsErrors.code}
                             onChangeValue={(e: any) => {setCode(e.target.value)}}
@@ -194,7 +197,6 @@ const Page = () => {
                             <Button
                                 text='Atrás'
                                 secondary={true}
-                                className='w-full'
                                 onClickButton={() => setShowCode(false)}
                             ></Button>
                         </div>
