@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
-import { compareUserPassword } from "@/helpers/userPassword";
 import { cookies } from "next/headers"
+import { checkSchema } from "@/schemas/schemas";
 import jwt from "jsonwebtoken";
 import { changeToUSedToken, getAuthToken } from "@/helpers/api/helpers";
 
@@ -17,15 +17,16 @@ export async function POST(req: Request) {
             return NextResponse.json({"error": "Bearer token not send"})
         }
 
-        const cookieStore = await cookies()
-        const cookie = cookieStore.get('userToken')
-
-        if(!cookie){
-            return NextResponse.json({ "error": "Not found an existing session" })
-        }
-
         try {
-            const decoded = jwt.verify(cookie.value, SECRET)
+            const body = await req.json()
+
+            const { token } = checkSchema.parse(body)
+
+            const decoded = jwt.verify(token, SECRET)
+
+            if(!decoded){
+                return NextResponse.json({"error": "Invalid token"})
+            }
 
             const changed = await changeToUSedToken(authToken?.token)
 
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
 
             return NextResponse.json({
                 valid: true,
-                user: cookie
+                user: token
             })
             
 
