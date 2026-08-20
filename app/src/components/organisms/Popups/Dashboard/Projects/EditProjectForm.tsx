@@ -153,7 +153,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                         title="Titulo"
                         type="text"
                         className="col-span-2"
-                        value={project?.title}
+                        value={title}
                         errorMessage={fieldsErrors.title}
                         onChangeValue={(e: any) => {setTitle(e.target.value)}}
                         isEdit={true}
@@ -162,7 +162,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     <CustomInput
                         name="technologies"
                         title="Tecnologías"
-                        value={project?.technologies}
+                        value={technologies}
                         type="text"
                         className="col-span-2"
                         isEdit={true}
@@ -184,7 +184,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                     <CustomInput
                         name="url"
                         title="Url"
-                        value={project?.url}
+                        value={url}
                         className="col-span-2"
                         isEdit={true}
                         type="url"
