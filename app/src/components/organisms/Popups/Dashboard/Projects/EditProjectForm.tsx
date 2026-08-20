@@ -176,7 +176,7 @@ const EditProjectForm = ( { setVisible, onProjectEdited, id } : Props ) => {
                         type="date"
                         className="col-span-2"
                         isEdit={true}
-                        value={parseDate(project?.creation_date!)}
+                        value={parseDate(creation_date!)}
                         errorMessage={fieldsErrors.creation_date}
                         onChangeValue={(e: any) => {setCreation_Date(e.target.value)}}
                     ></CustomInput>

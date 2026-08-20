@@ -100,7 +100,7 @@ const page = () => {
                         <div className="flex flex-col lg:flex-row gap-4 mt-4 ">
                             <div className="w-full lg:w-[45%]">
                                 <Image 
-                                    src={`/uploads/${project.image}`}
+                                    src={`${project.image}`}
                                     alt={`Portada proyecto ${project.title}`}
                                     height={500}
                                     width={700}
