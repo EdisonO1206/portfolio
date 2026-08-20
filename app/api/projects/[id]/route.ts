@@ -2,6 +2,7 @@ import prisma from "@/libs/prisma";
 import { NextResponse } from "next/server";
 import { projectSchema } from "@/schemas/schemas";
 import { saveFile } from "@/helpers/files";
+import { uploadImage } from "@/services/CloudinaryService";
 import { changeToUSedToken, getAuthToken } from "@/helpers/api/helpers";
 
 export async function GET(req: Request, context: { params: Promise<{ id: string }> }){
@@ -71,7 +72,10 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
         // destructure paylaod
         const { title, description, creation_date, url, technologies, image } = validated
 
-        const filename = typeof image === "string" ? image : await saveFile(image)
+        const imageUrl =
+            typeof image === "string"
+                ? image
+                : await uploadImage(image)
 
         // save data in database
         const res = await prisma.projects.update({
@@ -81,7 +85,7 @@ export async function PUT(req: Request, context: { params: Promise<{ id: string 
             data: {
                 creation_date: new Date(creation_date),
                 description,
-                image: filename,
+                image: imageUrl,
                 technologies,
                 title,
                 url

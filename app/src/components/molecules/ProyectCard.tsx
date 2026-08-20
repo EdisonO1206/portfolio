@@ -13,7 +13,7 @@ interface Props{
 
 const ProyectCard = ({description, technologies, title, to, image, className, date} : Props) => {
 
-    console.log(date)
+    // console.log(date)
 
     return (
         <div className={`max-w-sm h-full flex flex-col bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700 ${className}`}>

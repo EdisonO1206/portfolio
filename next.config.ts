@@ -32,7 +32,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['encrypted-tbn0.gstatic.com'],
+    domains: ['encrypted-tbn0.gstatic.com', 'res.cloudinary.com',],
   },
   async headers(){
     return [{

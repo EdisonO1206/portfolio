@@ -2,6 +2,7 @@ import { projectSchema } from "@/schemas/schemas"
 import { NextResponse } from "next/server"
 import prisma from "@/libs/prisma"
 import { saveFile } from "@/helpers/files"
+import { uploadImage } from "@/services/CloudinaryService"
 import { changeToUSedToken, getAuthToken } from "@/helpers/api/helpers"
 
 // get all projects
@@ -82,14 +83,17 @@ export async function POST(req: Request){
         // destructure paylaod
         const { title, description, creation_date, url, technologies, image } = validated
 
-        const filename = typeof image === "string" ? image : await saveFile(image)
+        const imageUrl =
+            typeof image === "string"
+                ? image
+                : await uploadImage(image)
 
         // save data in database
         const res = await prisma.projects.create({
             data: {
                 creation_date: new Date(creation_date),
                 description,
-                image: filename,
+                image: imageUrl,
                 technologies,
                 title,
                 url

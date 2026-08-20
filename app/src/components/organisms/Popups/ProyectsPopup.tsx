@@ -88,7 +88,7 @@ const ProyectsPopup = ( { onClose } : Props) => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-4">
                                     {projects.length > 0 && (
                                         projects.map(p => (
-                                            <ProyectCard key={p?.id} date={parseDate(p?.creation_date!)} className="col-span-1" description={p?.description} technologies={p?.technologies!} title={p?.title!} to={`/project/${p?.id}`} image={`/uploads/${p?.image}`} />
+                                            <ProyectCard key={p?.id} date={parseDate(p?.creation_date!)} className="col-span-1" description={p?.description} technologies={p?.technologies!} title={p?.title!} to={`/project/${p?.id}`} image={`${p?.image}`} />
                                         ))
                                     )}
                                 </div>
